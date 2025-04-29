@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>个人中心</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: #f5f7fa;
+            height: 100vh;
+            overflow: hidden;
+        }
+        .profile-container {
+            height: calc(100vh - 50px);
+            overflow-y: auto;
+        }
+        .bottom-nav {
+            height: 50px;
+            background-color: white;
+            box-shadow: 0 -1px 3px rgba(0,0,0,0.05);
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+        }
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            color: #666;
+        }
+        .nav-item.active {
+            color: #0052d9;
+        }
+        .avatar {
+            width: 64px;
+            height: 64px;
+            border-radius: 50%;
+            background-color: #e0e0e0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            border: 2px solid white;
+        }
+        .profile-header {
+            background-color: #0052d9;
+            height: 100px;
+            border-bottom-left-radius: 24px;
+            border-bottom-right-radius: 24px;
+        }
+        .order-card {
+            background-color: white;
+            border-radius: 8px;
+            overflow: hidden;
+            margin-bottom: 12px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+        .menu-item {
+            padding: 14px 16px;
+            background-color: white;
+            border-bottom: 1px solid #f0f0f0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .menu-item:last-child {
+            border-bottom: none;
+        }
+        .tag {
+            background-color: rgba(0,82,217,0.1);
+            color: #0052d9;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+        }
+        .logout-btn {
+            background-color: white;
+            color: #e34d59;
+            border-radius: 24px;
+            height: 44px;
+            width: 90%;
+            font-size: 14px;
+            font-weight: 500;
+            margin: 20px auto;
+        }
+    </style>
+</head>
+<body class="text-gray-800">
+    <!-- 个人信息顶部 -->
+    <div class="profile-header relative">
+        <div class="absolute -bottom-8 left-4 flex items-end">
+            <div class="avatar">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-8 h-8 text-gray-500">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" />
+                </svg>
+            </div>
+            <div class="ml-3 pb-2 text-white">
+                <div class="font-medium">张三</div>
+                <div class="text-xs opacity-80">会员等级：普通会员</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 个人中心内容 -->
+    <div class="profile-container pt-12 px-4">
+        <!-- 功能菜单 -->
+        <div class="mb-4 rounded-lg overflow-hidden">
+            <div class="menu-item">
+                <div class="flex items-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5 text-gray-400 mr-3">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M15 9h3.75M15 12h3.75M15 15h3.75M4.5 19.5h15a2.25 2.25 0 002.25-2.25V6.75A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25v10.5A2.25 2.25 0 004.5 19.5zm6-10.125a1.875 1.875 0 11-3.75 0 1.875 1.875 0 013.75 0zm1.294 6.336a6.721 6.721 0 01-3.17.789 6.721 6.721 0 01-3.168-.789 3.376 3.376 0 016.338 0z" />
+                    </svg>
+                    <span>个人信息</span>
+                </div>
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-4 h-4 text-gray-400">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
+                </svg>
+            </div>
+            <div class="menu-item">
+                <div class="flex items-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5 text-gray-400 mr-3">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z" />
+                    </svg>
+                    <span>我的收藏</span>
+                </div>
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-4 h-4 text-gray-400">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
+                </svg>
+            </div>
+            <div class="menu-item">
+                <div class="flex items-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5 text-gray-400 mr-3">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M9.879 7.519c1.171-1.025 3.071-1.025 4.242 0 1.172 1.025 1.172 2.687 0 3.712-.203.179-.43.326-.67.442-.745.361-1.45.999-1.45 1.827v.75M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9 5.25h.008v.008H12v-.008z" />
+                    </svg>
+                    <span>帮助中心</span>
+                </div>
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-4 h-4 text-gray-400">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
+                </svg>
+            </div>
+        </div>
+
+        <!-- 历史订单 -->
+        <div class="mb-3">
+            <div class="text-sm font-medium mb-2">历史订单</div>
+            
+            <div class="order-card p-3">
+                <div class="flex justify-between items-center">
+                    <div class="font-medium">订单 #2023120301</div>
+                    <div class="tag">已完成</div>
+                </div>
+                <div class="text-xs text-gray-500 mt-1">2023-12-03 18:30</div>
+                <div class="flex mt-2 text-sm">
+                    <div>麻婆豆腐 x1, 宫保鸡丁 x1</div>
+                </div>
+                <div class="flex justify-between items-center mt-2 pt-2 border-t border-gray-100">
+                    <div class="text-sm">共2件商品</div>
+                    <div class="font-medium">¥60.00</div>
+                </div>
+            </div>
+
+            <div class="order-card p-3">
+                <div class="flex justify-between items-center">
+                    <div class="font-medium">订单 #2023120101</div>
+                    <div class="tag">已完成</div>
+                </div>
+                <div class="text-xs text-gray-500 mt-1">2023-12-01 12:15</div>
+                <div class="flex mt-2 text-sm">
+                    <div>水煮鱼 x1, 回锅肉 x1, 米饭 x2</div>
+                </div>
+                <div class="flex justify-between items-center mt-2 pt-2 border-t border-gray-100">
+                    <div class="text-sm">共4件商品</div>
+                    <div class="font-medium">¥92.00</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 退出登录按钮 -->
+        <button class="logout-btn flex items-center justify-center w-full">
+            退出登录
+        </button>
+    </div>
+
+    <!-- 底部导航栏 -->
+    <div class="bottom-nav flex">
+        <div class="nav-item flex-1">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
+            </svg>
+            <div class="mt-1">点单</div>
+        </div>
+        <div class="nav-item active flex-1">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" />
+            </svg>
+            <div class="mt-1">我的</div>
+        </div>
+    </div>
+</body>
+</html> 

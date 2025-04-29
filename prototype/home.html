@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>点餐首页</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: #f5f7fa;
+            height: 100vh;
+            overflow: hidden;
+        }
+        .menu-categories {
+            background-color: #f0f0f0;
+            width: 80px;
+            overflow-y: auto;
+            height: calc(100vh - 50px);
+        }
+        .menu-items {
+            overflow-y: auto;
+            height: calc(100vh - 50px);
+            width: calc(100% - 80px);
+        }
+        .category-item {
+            padding: 12px 8px;
+            text-align: center;
+            font-size: 14px;
+            cursor: pointer;
+            border-left: 3px solid transparent;
+        }
+        .category-item.active {
+            background-color: white;
+            color: #0052d9;
+            border-left: 3px solid #0052d9;
+            font-weight: 500;
+        }
+        .food-card {
+            background-color: white;
+            border-radius: 8px;
+            overflow: hidden;
+            margin-bottom: 12px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+        .add-btn {
+            background-color: #0052d9;
+            color: white;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+        .count-control {
+            display: flex;
+            align-items: center;
+        }
+        .count-btn {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .minus-btn {
+            border: 1px solid #ddd;
+            color: #666;
+        }
+        .bottom-nav {
+            height: 50px;
+            background-color: white;
+            box-shadow: 0 -1px 3px rgba(0,0,0,0.05);
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+        }
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            color: #666;
+        }
+        .nav-item.active {
+            color: #0052d9;
+        }
+        .order-fab {
+            position: fixed;
+            bottom: 70px;
+            right: 16px;
+            background-color: #0052d9;
+            color: white;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 8px rgba(0,82,217,0.3);
+        }
+        .badge {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background-color: #e34d59;
+            color: white;
+            border-radius: 10px;
+            min-width: 20px;
+            height: 20px;
+            font-size: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+    </style>
+</head>
+<body class="text-gray-800">
+    <!-- 顶部搜索栏 -->
+    <div class="p-3 bg-white flex items-center justify-between border-b border-gray-200">
+        <div class="text-lg font-medium">阿莫点餐</div>
+        <div class="bg-gray-100 flex items-center rounded-full px-3 py-1 w-48">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-4 h-4 text-gray-400 mr-1">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" />
+            </svg>
+            <span class="text-sm text-gray-400">搜索菜品</span>
+        </div>
+    </div>
+
+    <!-- 菜单区域 -->
+    <div class="flex">
+        <!-- 左侧分类栏 -->
+        <div class="menu-categories">
+            <div class="category-item active">热销</div>
+            <div class="category-item">汤类</div>
+            <div class="category-item">川菜</div>
+            <div class="category-item">素菜</div>
+            <div class="category-item">肉类</div>
+            <div class="category-item">小吃</div>
+            <div class="category-item">饮料</div>
+            <div class="category-item">甜点</div>
+        </div>
+
+        <!-- 右侧菜品列表 -->
+        <div class="menu-items p-3">
+            <div class="mb-3">
+                <div class="text-sm font-medium mb-2">热销菜品</div>
+                
+                <!-- 菜品卡片 -->
+                <div class="food-card p-3">
+                    <div class="flex">
+                        <div class="w-20 h-20 rounded-md overflow-hidden bg-gray-200 mr-3">
+                            <img src="https://via.placeholder.com/80?text=麻婆豆腐" alt="麻婆豆腐" class="w-full h-full object-cover">
+                        </div>
+                        <div class="flex-1">
+                            <div class="font-medium">麻婆豆腐</div>
+                            <div class="text-xs text-gray-500 mt-1">麻辣鲜香，口感丰富</div>
+                            <div class="flex justify-between items-center mt-2">
+                                <div class="text-sm font-medium text-red-500">¥28</div>
+                                <div class="count-control">
+                                    <div class="count-btn minus-btn">-</div>
+                                    <div class="mx-2 text-sm">1</div>
+                                    <div class="count-btn add-btn">+</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="food-card p-3">
+                    <div class="flex">
+                        <div class="w-20 h-20 rounded-md overflow-hidden bg-gray-200 mr-3">
+                            <img src="https://via.placeholder.com/80?text=宫保鸡丁" alt="宫保鸡丁" class="w-full h-full object-cover">
+                        </div>
+                        <div class="flex-1">
+                            <div class="font-medium">宫保鸡丁</div>
+                            <div class="text-xs text-gray-500 mt-1">鸡肉鲜嫩，花生酥脆</div>
+                            <div class="flex justify-between items-center mt-2">
+                                <div class="text-sm font-medium text-red-500">¥32</div>
+                                <div class="add-btn">+</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="food-card p-3">
+                    <div class="flex">
+                        <div class="w-20 h-20 rounded-md overflow-hidden bg-gray-200 mr-3">
+                            <img src="https://via.placeholder.com/80?text=水煮鱼" alt="水煮鱼" class="w-full h-full object-cover">
+                        </div>
+                        <div class="flex-1">
+                            <div class="font-medium">水煮鱼</div>
+                            <div class="text-xs text-gray-500 mt-1">鱼肉鲜嫩，麻辣可口</div>
+                            <div class="flex justify-between items-center mt-2">
+                                <div class="text-sm font-medium text-red-500">¥46</div>
+                                <div class="add-btn">+</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="food-card p-3">
+                    <div class="flex">
+                        <div class="w-20 h-20 rounded-md overflow-hidden bg-gray-200 mr-3">
+                            <img src="https://via.placeholder.com/80?text=回锅肉" alt="回锅肉" class="w-full h-full object-cover">
+                        </div>
+                        <div class="flex-1">
+                            <div class="font-medium">回锅肉</div>
+                            <div class="text-xs text-gray-500 mt-1">肥而不腻，香辣可口</div>
+                            <div class="flex justify-between items-center mt-2">
+                                <div class="text-sm font-medium text-red-500">¥36</div>
+                                <div class="add-btn">+</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="food-card p-3">
+                    <div class="flex">
+                        <div class="w-20 h-20 rounded-md overflow-hidden bg-gray-200 mr-3">
+                            <img src="https://via.placeholder.com/80?text=鱼香肉丝" alt="鱼香肉丝" class="w-full h-full object-cover">
+                        </div>
+                        <div class="flex-1">
+                            <div class="font-medium">鱼香肉丝</div>
+                            <div class="text-xs text-gray-500 mt-1">酸甜可口，下饭神器</div>
+                            <div class="flex justify-between items-center mt-2">
+                                <div class="text-sm font-medium text-red-500">¥30</div>
+                                <div class="add-btn">+</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 订单悬浮按钮 -->
+    <div class="order-fab">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 3h1.386c.51 0 .955.343 1.087.835l.383 1.437M7.5 14.25a3 3 0 00-3 3h15.75m-12.75-3h11.218c1.121-2.3 2.1-4.684 2.924-7.138a60.114 60.114 0 00-16.536-1.84M7.5 14.25L5.106 5.272M6 20.25a.75.75 0 11-1.5 0 .75.75 0 011.5 0zm12.75 0a.75.75 0 11-1.5 0 .75.75 0 011.5 0z" />
+        </svg>
+        <div class="badge">2</div>
+    </div>
+
+    <!-- 底部导航栏 -->
+    <div class="bottom-nav flex">
+        <div class="nav-item active flex-1">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
+            </svg>
+            <div class="mt-1">点单</div>
+        </div>
+        <div class="nav-item flex-1">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" />
+            </svg>
+            <div class="mt-1">我的</div>
+        </div>
+    </div>
+</body>
+</html> 
