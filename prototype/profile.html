@@ -7,197 +7,222 @@
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     <style>
         body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-            background-color: #f5f7fa;
+            font-family: 'PingFang SC', 'Microsoft YaHei', sans-serif;
+            background-color: #f5f5f5;
             height: 100vh;
-            overflow: hidden;
+            margin: 0;
+            padding: 0;
         }
-        .profile-container {
-            height: calc(100vh - 50px);
-            overflow-y: auto;
-        }
-        .bottom-nav {
-            height: 50px;
-            background-color: white;
-            box-shadow: 0 -1px 3px rgba(0,0,0,0.05);
-            position: fixed;
-            bottom: 0;
-            width: 100%;
-        }
-        .nav-item {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            font-size: 12px;
-            color: #666;
-        }
-        .nav-item.active {
+        .t-primary {
             color: #0052d9;
         }
-        .avatar {
-            width: 64px;
-            height: 64px;
-            border-radius: 50%;
-            background-color: #e0e0e0;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            overflow: hidden;
-            border: 2px solid white;
-        }
-        .profile-header {
+        .t-bg-primary {
             background-color: #0052d9;
-            height: 100px;
-            border-bottom-left-radius: 24px;
-            border-bottom-right-radius: 24px;
         }
-        .order-card {
-            background-color: white;
+        .t-card {
             border-radius: 8px;
             overflow: hidden;
-            margin-bottom: 12px;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            background: white;
+            box-shadow: 0 1px 6px rgba(0, 0, 0, 0.08);
         }
-        .menu-item {
-            padding: 14px 16px;
+        .t-button {
+            background-color: #0052d9;
+            color: white;
+            border-radius: 4px;
+            padding: 10px 20px;
+            font-size: 14px;
+            font-weight: 500;
+            border: none;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        .t-button.outline {
             background-color: white;
-            border-bottom: 1px solid #f0f0f0;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
+            color: #0052d9;
+            border: 1px solid #0052d9;
         }
-        .menu-item:last-child {
+        .t-cell {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px;
+            border-bottom: 1px solid #f0f0f0;
+        }
+        .t-cell:last-child {
             border-bottom: none;
         }
+        .avatar {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            overflow: hidden;
+        }
+        .status-bar {
+            height: 44px;
+            background-color: #ffffff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 0 16px;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+            border-bottom: 1px solid #f0f0f0;
+        }
+        .tab-bar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 50px;
+            background: white;
+            display: flex;
+            border-top: 1px solid #f0f0f0;
+        }
+        .tab-item {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            font-size: 12px;
+        }
+        .order-history-item {
+            margin-bottom: 12px;
+        }
         .tag {
-            background-color: rgba(0,82,217,0.1);
-            color: #0052d9;
+            display: inline-block;
             padding: 2px 8px;
             border-radius: 4px;
             font-size: 12px;
+            margin-left: 8px;
         }
-        .logout-btn {
-            background-color: white;
-            color: #e34d59;
-            border-radius: 24px;
-            height: 44px;
-            width: 90%;
-            font-size: 14px;
-            font-weight: 500;
-            margin: 20px auto;
+        .tag.completed {
+            color: #52c41a;
+            background-color: #f6ffed;
         }
     </style>
 </head>
-<body class="text-gray-800">
-    <!-- 个人信息顶部 -->
-    <div class="profile-header relative">
-        <div class="absolute -bottom-8 left-4 flex items-end">
-            <div class="avatar">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-8 h-8 text-gray-500">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" />
-                </svg>
-            </div>
-            <div class="ml-3 pb-2 text-white">
-                <div class="font-medium">张三</div>
-                <div class="text-xs opacity-80">会员等级：普通会员</div>
+<body class="flex flex-col h-screen">
+    <!-- 状态栏 -->
+    <div class="status-bar">
+        <div class="font-medium">个人中心</div>
+    </div>
+
+    <!-- 个人信息 -->
+    <div class="p-4">
+        <div class="t-card">
+            <div class="flex items-center p-4">
+                <div class="avatar mr-4">
+                    <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&auto=format&fit=crop&w=400&q=80" alt="用户头像" class="w-full h-full object-cover">
+                </div>
+                <div class="flex-1">
+                    <div class="text-lg font-medium">张小猫</div>
+                    <div class="text-sm text-gray-500 mt-1">欢迎光临猫咪小餐厅</div>
+                </div>
+                <button class="t-button outline text-sm">编辑</button>
             </div>
         </div>
     </div>
 
-    <!-- 个人中心内容 -->
-    <div class="profile-container pt-12 px-4">
-        <!-- 功能菜单 -->
-        <div class="mb-4 rounded-lg overflow-hidden">
-            <div class="menu-item">
-                <div class="flex items-center">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5 text-gray-400 mr-3">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M15 9h3.75M15 12h3.75M15 15h3.75M4.5 19.5h15a2.25 2.25 0 002.25-2.25V6.75A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25v10.5A2.25 2.25 0 004.5 19.5zm6-10.125a1.875 1.875 0 11-3.75 0 1.875 1.875 0 013.75 0zm1.294 6.336a6.721 6.721 0 01-3.17.789 6.721 6.721 0 01-3.168-.789 3.376 3.376 0 016.338 0z" />
-                    </svg>
-                    <span>个人信息</span>
-                </div>
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-4 h-4 text-gray-400">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
-                </svg>
-            </div>
-            <div class="menu-item">
-                <div class="flex items-center">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5 text-gray-400 mr-3">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z" />
-                    </svg>
-                    <span>我的收藏</span>
-                </div>
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-4 h-4 text-gray-400">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
-                </svg>
-            </div>
-            <div class="menu-item">
-                <div class="flex items-center">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5 text-gray-400 mr-3">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M9.879 7.519c1.171-1.025 3.071-1.025 4.242 0 1.172 1.025 1.172 2.687 0 3.712-.203.179-.43.326-.67.442-.745.361-1.45.999-1.45 1.827v.75M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9 5.25h.008v.008H12v-.008z" />
-                    </svg>
-                    <span>帮助中心</span>
-                </div>
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-4 h-4 text-gray-400">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
-                </svg>
-            </div>
+    <!-- 订单历史 -->
+    <div class="p-4">
+        <div class="mb-2 px-1 flex justify-between items-center">
+            <div class="font-medium">历史订单</div>
+            <div class="text-sm t-primary">查看全部</div>
         </div>
-
-        <!-- 历史订单 -->
-        <div class="mb-3">
-            <div class="text-sm font-medium mb-2">历史订单</div>
-            
-            <div class="order-card p-3">
-                <div class="flex justify-between items-center">
-                    <div class="font-medium">订单 #2023120301</div>
-                    <div class="tag">已完成</div>
+        <div class="t-card">
+            <div class="order-history-item t-cell">
+                <div>
+                    <div class="font-medium">订单 #2023112001</div>
+                    <div class="text-xs text-gray-500 mt-1">2023-11-20 12:30</div>
                 </div>
-                <div class="text-xs text-gray-500 mt-1">2023-12-03 18:30</div>
-                <div class="flex mt-2 text-sm">
-                    <div>麻婆豆腐 x1, 宫保鸡丁 x1</div>
-                </div>
-                <div class="flex justify-between items-center mt-2 pt-2 border-t border-gray-100">
-                    <div class="text-sm">共2件商品</div>
-                    <div class="font-medium">¥60.00</div>
+                <div class="flex items-center">
+                    <div class="text-sm">¥68.00</div>
+                    <div class="tag completed">已完成</div>
                 </div>
             </div>
-
-            <div class="order-card p-3">
-                <div class="flex justify-between items-center">
-                    <div class="font-medium">订单 #2023120101</div>
-                    <div class="tag">已完成</div>
+            <div class="order-history-item t-cell">
+                <div>
+                    <div class="font-medium">订单 #2023111501</div>
+                    <div class="text-xs text-gray-500 mt-1">2023-11-15 18:15</div>
                 </div>
-                <div class="text-xs text-gray-500 mt-1">2023-12-01 12:15</div>
-                <div class="flex mt-2 text-sm">
-                    <div>水煮鱼 x1, 回锅肉 x1, 米饭 x2</div>
+                <div class="flex items-center">
+                    <div class="text-sm">¥42.00</div>
+                    <div class="tag completed">已完成</div>
                 </div>
-                <div class="flex justify-between items-center mt-2 pt-2 border-t border-gray-100">
-                    <div class="text-sm">共4件商品</div>
-                    <div class="font-medium">¥92.00</div>
+            </div>
+            <div class="order-history-item t-cell">
+                <div>
+                    <div class="font-medium">订单 #2023110801</div>
+                    <div class="text-xs text-gray-500 mt-1">2023-11-08 12:45</div>
+                </div>
+                <div class="flex items-center">
+                    <div class="text-sm">¥56.50</div>
+                    <div class="tag completed">已完成</div>
                 </div>
             </div>
         </div>
-
-        <!-- 退出登录按钮 -->
-        <button class="logout-btn flex items-center justify-center w-full">
-            退出登录
-        </button>
     </div>
 
-    <!-- 底部导航栏 -->
-    <div class="bottom-nav flex">
-        <div class="nav-item flex-1">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
-            </svg>
-            <div class="mt-1">点单</div>
+    <!-- 其他选项 -->
+    <div class="p-4">
+        <div class="t-card">
+            <div class="t-cell">
+                <div class="flex items-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-3 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                    </svg>
+                    <span>消息中心</span>
+                </div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                </svg>
+            </div>
+            <div class="t-cell">
+                <div class="flex items-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-3 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    <span>帮助与反馈</span>
+                </div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                </svg>
+            </div>
+            <div class="t-cell">
+                <div class="flex items-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-3 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                    </svg>
+                    <span>设置</span>
+                </div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                </svg>
+            </div>
         </div>
-        <div class="nav-item active flex-1">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" />
+    </div>
+
+    <!-- 退出登录按钮 -->
+    <div class="p-4">
+        <button class="t-button outline w-full">退出登录</button>
+    </div>
+
+    <!-- 底部标签栏 -->
+    <div class="tab-bar mt-auto">
+        <div class="tab-item text-gray-400">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
             </svg>
-            <div class="mt-1">我的</div>
+            <span>点单</span>
+        </div>
+        <div class="tab-item t-primary">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+            </svg>
+            <span>我的</span>
         </div>
     </div>
 </body>

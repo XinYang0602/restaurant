@@ -1,62 +1,151 @@
 /**index.wxss**/
-page {
+.container {
+  display: flex;
+  flex-direction: column;
   height: 100vh;
-  display: flex;
-  flex-direction: column;
-}
-.scrollarea {
-  flex: 1;
-  overflow-y: hidden;
-}
-
-.userinfo {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  color: #aaa;
-  width: 80%;
-}
-
-.userinfo-avatar {
+  width: 100vw;
   overflow: hidden;
-  width: 128rpx;
-  height: 128rpx;
-  margin: 20rpx;
-  border-radius: 50%;
+  background-color: #f5f5f5;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
 }
 
-.usermotto {
-  margin-top: 200px;
-}
-
-.avatar-wrapper {
-  padding: 0;
-  width: 56px !important;
-  border-radius: 8px;
-  margin-top: 40px;
-  margin-bottom: 40px;
-}
-
-.avatar {
-  display: block;
-  width: 56px;
-  height: 56px;
-}
-
-.nickname-wrapper {
+.content-container {
   display: flex;
-  width: 100%;
-  padding: 16px;
-  box-sizing: border-box;
-  border-top: .5px solid rgba(0, 0, 0, 0.1);
-  border-bottom: .5px solid rgba(0, 0, 0, 0.1);
-  color: black;
-}
-
-.nickname-label {
-  width: 105px;
-}
-
-.nickname-input {
   flex: 1;
+  overflow: hidden;
+  height: calc(100vh - 88rpx);
+  width: 100%;
+}
+
+.status-bar {
+  height: 88rpx;
+  background-color: #ffffff;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.status-title {
+  font-weight: 500;
+  font-size: 32rpx;
+}
+
+.category-bar {
+  width: 25%;
+  height: 100%;
+  background-color: #fff;
+  overflow-y: auto;
+}
+
+.category-item {
+  padding: 30rpx 10rpx;
+  text-align: center;
+  font-size: 26rpx;
+}
+
+.category-active {
+  color: #0052d9;
+  background-color: #f2f3ff;
+  border-left: 8rpx solid #0052d9;
+}
+
+.dish-list {
+  width: 75%;
+  height: 100%;
+  padding-bottom: 120rpx;
+  overflow-y: auto;
+}
+
+.category-title {
+  padding: 20rpx 30rpx;
+  font-size: 32rpx;
+  font-weight: 500;
+  background-color: #fff;
+  position: sticky;
+  top: 0;
+  z-index: 5;
+}
+
+.dish-card {
+  padding: 20rpx;
+}
+
+.dish-content {
+  display: flex;
+}
+
+.dish-image {
+  width: 192rpx;
+  height: 192rpx;
+  border-radius: 16rpx;
+  margin-right: 20rpx;
+}
+
+.dish-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.dish-name {
+  font-weight: 500;
+  font-size: 30rpx;
+  margin-bottom: 4rpx;
+}
+
+.dish-desc {
+  color: #888;
+  font-size: 24rpx;
+  margin-bottom: 12rpx;
+}
+
+.dish-price-action {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: auto;
+}
+
+.dish-price {
+  color: #fa4126;
+  font-weight: 500;
+}
+
+.dish-counter {
+  display: flex;
+  align-items: center;
+}
+
+.counter-number {
+  margin: 0 16rpx;
+  min-width: 20rpx;
+  text-align: center;
+}
+
+.cart-button {
+  position: fixed;
+  bottom: 140rpx;
+  right: 40rpx;
+  width: 100rpx;
+  height: 100rpx;
+  border-radius: 50%;
+  background-color: #0052d9;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  box-shadow: 0 8rpx 20rpx rgba(0, 82, 217, 0.4);
+  z-index: 9;
+}
+
+.scrollarea {
+  height: 100vh;
+  width: 100%;
 }

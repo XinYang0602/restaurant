@@ -1,0 +1,141 @@
+<!-- 管理员订单页面 -->
+<view class="container">
+  <!-- 顶部状态栏 -->
+  <view class="status-bar">
+    <view class="status-title">订单管理（管理员）</view>
+  </view>
+
+  <!-- 标签页 -->
+  <t-tabs value="{{activeTab}}" bind:change="onTabChange">
+    <t-tab-panel label="全部订单" value="all">
+      <view class="orders-container">
+        <block wx:if="{{orders.length > 0}}">
+          <view wx:for="{{orders}}" wx:key="id" class="order-card">
+            <view class="order-header">
+              <view>
+                <view class="order-time">{{item.orderTimeFormatted}}</view>
+                <view class="order-id">订单 #{{item.id}}</view>
+              </view>
+              <t-tag theme="{{item.status === 'completed' ? 'success' : 'primary'}}" variant="light">
+                {{item.status === 'completed' ? '已完成' : '制作中'}}
+              </t-tag>
+            </view>
+            
+            <view class="order-items">
+              <view wx:for="{{item.items}}" wx:for-item="dish" wx:key="id" class="order-item">
+                <view class="item-info">
+                  <t-tag shape="round" variant="light" class="item-count">{{dish.count}}x</t-tag>
+                  <text>{{dish.name}}</text>
+                </view>
+                <view class="item-price">¥{{dish.totalPrice}}</view>
+              </view>
+            </view>
+            
+            <view class="order-footer">
+              <view class="order-total">
+                <text>合计：</text>
+                <text class="total-price">¥{{item.totalPrice}}</text>
+              </view>
+              <view>
+                <t-button wx:if="{{item.status === 'processing'}}" 
+                  theme="success" 
+                  size="small" 
+                  bindtap="completeOrder" 
+                  data-id="{{item.id}}">
+                  完成订单
+                </t-button>
+                <text wx:else class="complete-time">{{item.completeTimeFormatted}} 完成</text>
+              </view>
+            </view>
+          </view>
+        </block>
+        <view wx:else class="empty-tip">
+          <t-icon name="info-circle" size="48rpx" color="#bbb" />
+          <text class="empty-text">暂无订单</text>
+        </view>
+      </view>
+    </t-tab-panel>
+    
+    <t-tab-panel label="制作中" value="processing">
+      <view class="orders-container">
+        <block wx:if="{{processingOrders.length > 0}}">
+          <view wx:for="{{processingOrders}}" wx:key="id" class="order-card">
+            <view class="order-header">
+              <view>
+                <view class="order-time">{{item.orderTimeFormatted}}</view>
+                <view class="order-id">订单 #{{item.id}}</view>
+              </view>
+              <t-tag theme="primary" variant="light">制作中</t-tag>
+            </view>
+            
+            <view class="order-items">
+              <view wx:for="{{item.items}}" wx:for-item="dish" wx:key="id" class="order-item">
+                <view class="item-info">
+                  <t-tag shape="round" variant="light" class="item-count">{{dish.count}}x</t-tag>
+                  <text>{{dish.name}}</text>
+                </view>
+                <view class="item-price">¥{{dish.totalPrice}}</view>
+              </view>
+            </view>
+            
+            <view class="order-footer">
+              <view class="order-total">
+                <text>合计：</text>
+                <text class="total-price">¥{{item.totalPrice}}</text>
+              </view>
+              <t-button 
+                theme="success" 
+                size="small" 
+                bindtap="completeOrder" 
+                data-id="{{item.id}}">
+                完成订单
+              </t-button>
+            </view>
+          </view>
+        </block>
+        <view wx:else class="empty-tip">
+          <t-icon name="info-circle" size="48rpx" color="#bbb" />
+          <text class="empty-text">暂无制作中的订单</text>
+        </view>
+      </view>
+    </t-tab-panel>
+    
+    <t-tab-panel label="已完成" value="completed">
+      <view class="orders-container">
+        <block wx:if="{{completedOrders.length > 0}}">
+          <view wx:for="{{completedOrders}}" wx:key="id" class="order-card">
+            <view class="order-header">
+              <view>
+                <view class="order-time">{{item.orderTimeFormatted}}</view>
+                <view class="order-id">订单 #{{item.id}}</view>
+              </view>
+              <t-tag theme="success" variant="light">已完成</t-tag>
+            </view>
+            
+            <view class="order-items">
+              <view wx:for="{{item.items}}" wx:for-item="dish" wx:key="id" class="order-item">
+                <view class="item-info">
+                  <t-tag shape="round" variant="light" class="item-count">{{dish.count}}x</t-tag>
+                  <text>{{dish.name}}</text>
+                </view>
+                <view class="item-price">¥{{dish.totalPrice}}</view>
+              </view>
+            </view>
+            
+            <view class="order-footer">
+              <view class="order-total">
+                <text>合计：</text>
+                <text class="total-price">¥{{item.totalPrice}}</text>
+              </view>
+              <text class="complete-time">{{item.completeTimeFormatted}} 完成</text>
+            </view>
+          </view>
+        </block>
+        <view wx:else class="empty-tip">
+          <t-icon name="info-circle" size="48rpx" color="#bbb" />
+          <text class="empty-text">暂无已完成的订单</text>
+        </view>
+      </view>
+    </t-tab-panel>
+  </t-tabs>
+</view> 

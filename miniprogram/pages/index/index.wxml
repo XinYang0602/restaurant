@@ -1,28 +1,54 @@
 <!--index.wxml-->
-<scroll-view class="scrollarea" scroll-y type="list">
-  <view class="container">
-    <view class="userinfo">
-      <block wx:if="{{canIUseNicknameComp && !hasUserInfo}}">
-        <button class="avatar-wrapper" open-type="chooseAvatar" bind:chooseavatar="onChooseAvatar">
-          <image class="avatar" src="{{userInfo.avatarUrl}}"></image>
-        </button>
-        <view class="nickname-wrapper">
-          <text class="nickname-label">昵称</text>
-          <input type="nickname" class="nickname-input" placeholder="请输入昵称" bind:change="onInputChange" />
-        </view>
-      </block>
-      <block wx:elif="{{!hasUserInfo}}">
-        <button wx:if="{{canIUseGetUserProfile}}" bindtap="getUserProfile"> 获取头像昵称 </button>
-        <view wx:else> 请使用2.10.4及以上版本基础库 </view>
-      </block>
-      <block wx:else>
-        <image bindtap="bindViewTap" class="userinfo-avatar" src="{{userInfo.avatarUrl}}" mode="cover"></image>
-        <text class="userinfo-nickname">{{userInfo.nickName}}</text>
-      </block>
-    </view>
-    <view class="usermotto">
-      <text class="user-motto">{{motto}}</text>
-    </view>
-    <t-button theme="primary">点击起飞！！！</t-button>
+<view class="container">
+  <!-- 顶部状态栏 -->
+  <view class="status-bar">
+    <text class="status-title">小杨私厨</text>
   </view>
-</scroll-view>
+
+  <view class="content-container">
+    <!-- 左侧分类栏 -->
+    <scroll-view scroll-y class="category-bar">
+      <view wx:for="{{categories}}" wx:key="id" bindtap="switchCategory" data-id="{{item.id}}" 
+        class="category-item {{currentCategory === item.id ? 'category-active' : ''}}">
+        <text>{{item.name}}</text>
+      </view>
+    </scroll-view>
+
+    <!-- 右侧菜品列表 -->
+    <scroll-view scroll-y class="dish-list" enhanced="true" show-scrollbar="true">
+      <view class="category-title">{{categories[currentCategory].name}}</view>
+      
+      <view wx:for="{{dishes[currentCategory]}}" wx:key="id" class="dish-card">
+        <t-card>
+          <view slot="content" class="dish-content">
+            <t-image src="{{item.image}}" mode="aspectFill" width="96" height="96" 
+              shape="round" class="dish-image"></t-image>
+            <view class="dish-info">
+              <view class="dish-name">{{item.name}}</view>
+              <view class="dish-desc">{{item.description}}</view>
+              <view class="dish-price-action">
+                <text class="dish-price">¥{{item.price}}</text>
+                <view class="dish-counter" wx:if="{{item.count > 0}}">
+                  <t-button theme="primary" size="small" icon="remove" shape="circle" variant="outline" 
+                    bindtap="decreaseDish" data-id="{{item.id}}"></t-button>
+                  <text class="counter-number">{{item.count}}</text>
+                  <t-button theme="primary" size="small" icon="add" shape="circle" 
+                    bindtap="increaseDish" data-id="{{item.id}}"></t-button>
+                </view>
+                <t-button wx:else theme="primary" size="small" icon="add" shape="circle" 
+                  bindtap="increaseDish" data-id="{{item.id}}"></t-button>
+              </view>
+            </view>
+          </view>
+        </t-card>
+      </view>
+    </scroll-view>
+  </view>
+
+  <!-- 购物车浮动按钮 -->
+  <view class="cart-button" bindtap="goToOrder">
+    <t-badge count="{{cartCount}}" offset="{{[0, 0]}}" size="medium">
+      <t-icon name="cart" size="48rpx" color="#fff" />
+    </t-badge>
+  </view>
+</view>

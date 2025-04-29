@@ -1,0 +1,60 @@
+<!-- 订单页面 -->
+<view class="container">
+  <!-- 顶部状态栏 -->
+  <view class="status-bar">
+    <view class="status-back" bindtap="navigateBack">
+      <t-icon name="chevron-left" size="48rpx" />
+    </view>
+    <view class="status-title">订单详情</view>
+    <view style="width: 48rpx;"></view>
+  </view>
+
+  <!-- 订单内容 -->
+  <scroll-view scroll-y class="order-content">
+    <!-- 预计上菜时间 -->
+    <t-cell title="预计上菜时间" note="{{deliveryTime}}" t-class="delivery-time-cell" />
+
+    <!-- 已点菜品 -->
+    <view class="order-items">
+      <view class="section-title">已点菜品</view>
+      
+      <view wx:for="{{cartItems}}" wx:key="id" class="order-item">
+        <view class="item-info">
+          <view class="item-name">{{item.name}}</view>
+          <view class="item-price-unit">¥{{item.price}} × {{item.count}}</view>
+        </view>
+        <view class="item-action">
+          <view class="item-total">¥{{item.totalPrice}}</view>
+          <view class="item-counter">
+            <t-button theme="primary" size="small" icon="remove" shape="circle" variant="outline" 
+              bindtap="decreaseItem" data-id="{{item.id}}"></t-button>
+            <text class="counter-number">{{item.count}}</text>
+            <t-button theme="primary" size="small" icon="add" shape="circle" 
+              bindtap="increaseItem" data-id="{{item.id}}"></t-button>
+          </view>
+        </view>
+      </view>
+      
+      <!-- 订单汇总 -->
+      <view class="divider"></view>
+      <view class="order-summary">
+        <view class="total-count">共{{totalCount}}件商品</view>
+        <view class="total-price-container">
+          <text class="total-label">合计</text>
+          <text class="total-price">¥{{totalPrice}}</text>
+        </view>
+      </view>
+    </view>
+    
+    <!-- 备注信息 -->
+    <view class="order-note">
+      <t-icon name="info-circle" size="40rpx" color="#faad14" />
+      <text class="note-text">订单提交后，厨师将马上开始准备您的美食</text>
+    </view>
+  </scroll-view>
+
+  <!-- 底部结算栏 -->
+  <view class="submit-bar">
+    <t-button theme="primary" size="large" block bindtap="submitOrder">提交订单</t-button>
+  </view>
+</view> 

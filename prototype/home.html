@@ -3,233 +3,245 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>点餐首页</title>
+    <title>点单页面</title>
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     <style>
         body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-            background-color: #f5f7fa;
+            font-family: 'PingFang SC', 'Microsoft YaHei', sans-serif;
+            background-color: #f5f5f5;
             height: 100vh;
             overflow: hidden;
+            margin: 0;
+            padding: 0;
         }
-        .menu-categories {
-            background-color: #f0f0f0;
-            width: 80px;
-            overflow-y: auto;
-            height: calc(100vh - 50px);
-        }
-        .menu-items {
-            overflow-y: auto;
-            height: calc(100vh - 50px);
-            width: calc(100% - 80px);
-        }
-        .category-item {
-            padding: 12px 8px;
-            text-align: center;
-            font-size: 14px;
-            cursor: pointer;
-            border-left: 3px solid transparent;
-        }
-        .category-item.active {
-            background-color: white;
+        .t-primary {
             color: #0052d9;
-            border-left: 3px solid #0052d9;
-            font-weight: 500;
         }
-        .food-card {
-            background-color: white;
+        .t-bg-primary {
+            background-color: #0052d9;
+        }
+        .t-card {
             border-radius: 8px;
             overflow: hidden;
-            margin-bottom: 12px;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            background: white;
+            box-shadow: 0 1px 6px rgba(0, 0, 0, 0.08);
         }
-        .add-btn {
+        .t-button {
             background-color: #0052d9;
             color: white;
-            width: 24px;
-            height: 24px;
+            border-radius: 4px;
+            padding: 8px 12px;
+            font-size: 14px;
+            font-weight: 500;
+            border: none;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        .t-button-circle {
+            width: 28px;
+            height: 28px;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
             font-weight: bold;
+            padding: 0;
         }
-        .count-control {
-            display: flex;
-            align-items: center;
-        }
-        .count-btn {
-            width: 24px;
-            height: 24px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        .minus-btn {
-            border: 1px solid #ddd;
-            color: #666;
-        }
-        .bottom-nav {
-            height: 50px;
-            background-color: white;
-            box-shadow: 0 -1px 3px rgba(0,0,0,0.05);
-            position: fixed;
-            bottom: 0;
-            width: 100%;
-        }
-        .nav-item {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            font-size: 12px;
-            color: #666;
-        }
-        .nav-item.active {
-            color: #0052d9;
-        }
-        .order-fab {
-            position: fixed;
-            bottom: 70px;
-            right: 16px;
+        .t-button-circle.add {
             background-color: #0052d9;
             color: white;
-            width: 60px;
-            height: 60px;
-            border-radius: 50%;
+        }
+        .t-button-circle.minus {
+            background-color: #f5f5f5;
+            color: #0052d9;
+            border: 1px solid #0052d9;
+        }
+        .counter {
             display: flex;
             align-items: center;
-            justify-content: center;
-            box-shadow: 0 4px 8px rgba(0,82,217,0.3);
         }
-        .badge {
+        .counter-number {
+            margin: 0 8px;
+            font-size: 14px;
+        }
+        .category-active {
+            color: #0052d9;
+            background-color: #f2f3ff;
+            border-left: 4px solid #0052d9;
+        }
+        .category-bar {
+            height: calc(100vh - 50px);
+            overflow-y: auto;
+        }
+        .dish-list {
+            height: calc(100vh - 50px);
+            overflow-y: auto;
+            padding-bottom: 60px;
+        }
+        .tab-bar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 50px;
+            background: white;
+            display: flex;
+            border-top: 1px solid #f0f0f0;
+        }
+        .tab-item {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            font-size: 12px;
+        }
+        .status-bar {
+            height: 44px;
+            background-color: #ffffff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+            border-bottom: 1px solid #f0f0f0;
+        }
+        .cart-button {
+            position: fixed;
+            bottom: 70px;
+            right: 20px;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background-color: #0052d9;
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 4px 10px rgba(0, 82, 217, 0.4);
+        }
+        .cart-badge {
             position: absolute;
             top: -5px;
             right: -5px;
-            background-color: #e34d59;
+            background-color: #ff4d4f;
             color: white;
             border-radius: 10px;
-            min-width: 20px;
-            height: 20px;
+            padding: 0 6px;
             font-size: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            min-width: 20px;
+            text-align: center;
         }
     </style>
 </head>
-<body class="text-gray-800">
-    <!-- 顶部搜索栏 -->
-    <div class="p-3 bg-white flex items-center justify-between border-b border-gray-200">
-        <div class="text-lg font-medium">阿莫点餐</div>
-        <div class="bg-gray-100 flex items-center rounded-full px-3 py-1 w-48">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-4 h-4 text-gray-400 mr-1">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" />
-            </svg>
-            <span class="text-sm text-gray-400">搜索菜品</span>
-        </div>
+<body class="flex flex-col">
+    <!-- 状态栏 -->
+    <div class="status-bar">
+        <div class="font-medium">猫咪小餐厅</div>
     </div>
 
-    <!-- 菜单区域 -->
-    <div class="flex">
+    <div class="flex flex-1 overflow-hidden">
         <!-- 左侧分类栏 -->
-        <div class="menu-categories">
-            <div class="category-item active">热销</div>
-            <div class="category-item">汤类</div>
-            <div class="category-item">川菜</div>
-            <div class="category-item">素菜</div>
-            <div class="category-item">肉类</div>
-            <div class="category-item">小吃</div>
-            <div class="category-item">饮料</div>
-            <div class="category-item">甜点</div>
+        <div class="w-1/4 bg-white category-bar">
+            <div class="py-4 px-2 category-active">
+                <div class="text-center text-sm">汤品</div>
+            </div>
+            <div class="py-4 px-2">
+                <div class="text-center text-sm">川菜</div>
+            </div>
+            <div class="py-4 px-2">
+                <div class="text-center text-sm">素菜</div>
+            </div>
+            <div class="py-4 px-2">
+                <div class="text-center text-sm">肉菜</div>
+            </div>
+            <div class="py-4 px-2">
+                <div class="text-center text-sm">主食</div>
+            </div>
+            <div class="py-4 px-2">
+                <div class="text-center text-sm">饮料</div>
+            </div>
         </div>
 
         <!-- 右侧菜品列表 -->
-        <div class="menu-items p-3">
-            <div class="mb-3">
-                <div class="text-sm font-medium mb-2">热销菜品</div>
-                
-                <!-- 菜品卡片 -->
-                <div class="food-card p-3">
+        <div class="w-3/4 dish-list">
+            <!-- 分类标题 -->
+            <div class="px-4 pt-4 pb-2">
+                <div class="text-lg font-medium">汤品</div>
+            </div>
+
+            <!-- 菜品卡片 -->
+            <div class="p-3">
+                <div class="t-card p-3">
                     <div class="flex">
-                        <div class="w-20 h-20 rounded-md overflow-hidden bg-gray-200 mr-3">
-                            <img src="https://via.placeholder.com/80?text=麻婆豆腐" alt="麻婆豆腐" class="w-full h-full object-cover">
+                        <div class="w-24 h-24 rounded-lg overflow-hidden bg-gray-200 mr-3">
+                            <img src="https://images.unsplash.com/photo-1582878826629-29b7ad1cdc43?ixlib=rb-1.2.1&auto=format&fit=crop&w=1567&q=80" alt="紫菜汤" class="w-full h-full object-cover">
                         </div>
                         <div class="flex-1">
-                            <div class="font-medium">麻婆豆腐</div>
-                            <div class="text-xs text-gray-500 mt-1">麻辣鲜香，口感丰富</div>
-                            <div class="flex justify-between items-center mt-2">
-                                <div class="text-sm font-medium text-red-500">¥28</div>
-                                <div class="count-control">
-                                    <div class="count-btn minus-btn">-</div>
-                                    <div class="mx-2 text-sm">1</div>
-                                    <div class="count-btn add-btn">+</div>
+                            <div class="font-medium">紫菜蛋花汤</div>
+                            <div class="text-xs text-gray-500 mt-1">鲜美味道，营养丰富</div>
+                            <div class="flex justify-between items-center mt-3">
+                                <div class="text-red-500 font-medium">¥12</div>
+                                <div class="counter">
+                                    <button class="t-button-circle minus">-</button>
+                                    <span class="counter-number">1</span>
+                                    <button class="t-button-circle add">+</button>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
+            </div>
 
-                <div class="food-card p-3">
+            <div class="p-3">
+                <div class="t-card p-3">
                     <div class="flex">
-                        <div class="w-20 h-20 rounded-md overflow-hidden bg-gray-200 mr-3">
-                            <img src="https://via.placeholder.com/80?text=宫保鸡丁" alt="宫保鸡丁" class="w-full h-full object-cover">
+                        <div class="w-24 h-24 rounded-lg overflow-hidden bg-gray-200 mr-3">
+                            <img src="https://images.unsplash.com/photo-1613844237701-8f3664fc2eff?ixlib=rb-1.2.1&auto=format&fit=crop&w=1567&q=80" alt="酸辣汤" class="w-full h-full object-cover">
                         </div>
                         <div class="flex-1">
-                            <div class="font-medium">宫保鸡丁</div>
-                            <div class="text-xs text-gray-500 mt-1">鸡肉鲜嫩，花生酥脆</div>
-                            <div class="flex justify-between items-center mt-2">
-                                <div class="text-sm font-medium text-red-500">¥32</div>
-                                <div class="add-btn">+</div>
+                            <div class="font-medium">酸辣汤</div>
+                            <div class="text-xs text-gray-500 mt-1">经典川菜风味，酸辣可口</div>
+                            <div class="flex justify-between items-center mt-3">
+                                <div class="text-red-500 font-medium">¥18</div>
+                                <button class="t-button-circle add">+</button>
                             </div>
                         </div>
                     </div>
                 </div>
+            </div>
 
-                <div class="food-card p-3">
+            <div class="p-3">
+                <div class="t-card p-3">
                     <div class="flex">
-                        <div class="w-20 h-20 rounded-md overflow-hidden bg-gray-200 mr-3">
-                            <img src="https://via.placeholder.com/80?text=水煮鱼" alt="水煮鱼" class="w-full h-full object-cover">
+                        <div class="w-24 h-24 rounded-lg overflow-hidden bg-gray-200 mr-3">
+                            <img src="https://images.unsplash.com/photo-1626201850121-3f78f2f546b2?ixlib=rb-1.2.1&auto=format&fit=crop&w=1567&q=80" alt="西红柿蛋汤" class="w-full h-full object-cover">
                         </div>
                         <div class="flex-1">
-                            <div class="font-medium">水煮鱼</div>
-                            <div class="text-xs text-gray-500 mt-1">鱼肉鲜嫩，麻辣可口</div>
-                            <div class="flex justify-between items-center mt-2">
-                                <div class="text-sm font-medium text-red-500">¥46</div>
-                                <div class="add-btn">+</div>
+                            <div class="font-medium">西红柿蛋汤</div>
+                            <div class="text-xs text-gray-500 mt-1">番茄鲜香，温暖舒适</div>
+                            <div class="flex justify-between items-center mt-3">
+                                <div class="text-red-500 font-medium">¥15</div>
+                                <button class="t-button-circle add">+</button>
                             </div>
                         </div>
                     </div>
                 </div>
+            </div>
 
-                <div class="food-card p-3">
+            <div class="p-3">
+                <div class="t-card p-3">
                     <div class="flex">
-                        <div class="w-20 h-20 rounded-md overflow-hidden bg-gray-200 mr-3">
-                            <img src="https://via.placeholder.com/80?text=回锅肉" alt="回锅肉" class="w-full h-full object-cover">
+                        <div class="w-24 h-24 rounded-lg overflow-hidden bg-gray-200 mr-3">
+                            <img src="https://images.unsplash.com/photo-1623855244183-52fd8d3ce2f7?ixlib=rb-1.2.1&auto=format&fit=crop&w=1567&q=80" alt="冬瓜排骨汤" class="w-full h-full object-cover">
                         </div>
                         <div class="flex-1">
-                            <div class="font-medium">回锅肉</div>
-                            <div class="text-xs text-gray-500 mt-1">肥而不腻，香辣可口</div>
-                            <div class="flex justify-between items-center mt-2">
-                                <div class="text-sm font-medium text-red-500">¥36</div>
-                                <div class="add-btn">+</div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="food-card p-3">
-                    <div class="flex">
-                        <div class="w-20 h-20 rounded-md overflow-hidden bg-gray-200 mr-3">
-                            <img src="https://via.placeholder.com/80?text=鱼香肉丝" alt="鱼香肉丝" class="w-full h-full object-cover">
-                        </div>
-                        <div class="flex-1">
-                            <div class="font-medium">鱼香肉丝</div>
-                            <div class="text-xs text-gray-500 mt-1">酸甜可口，下饭神器</div>
-                            <div class="flex justify-between items-center mt-2">
-                                <div class="text-sm font-medium text-red-500">¥30</div>
-                                <div class="add-btn">+</div>
+                            <div class="font-medium">冬瓜排骨汤</div>
+                            <div class="text-xs text-gray-500 mt-1">清爽滋补，肉香四溢</div>
+                            <div class="flex justify-between items-center mt-3">
+                                <div class="text-red-500 font-medium">¥28</div>
+                                <button class="t-button-circle add">+</button>
                             </div>
                         </div>
                     </div>
@@ -238,27 +250,27 @@
         </div>
     </div>
 
-    <!-- 订单悬浮按钮 -->
-    <div class="order-fab">
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 3h1.386c.51 0 .955.343 1.087.835l.383 1.437M7.5 14.25a3 3 0 00-3 3h15.75m-12.75-3h11.218c1.121-2.3 2.1-4.684 2.924-7.138a60.114 60.114 0 00-16.536-1.84M7.5 14.25L5.106 5.272M6 20.25a.75.75 0 11-1.5 0 .75.75 0 011.5 0zm12.75 0a.75.75 0 11-1.5 0 .75.75 0 011.5 0z" />
+    <!-- 购物车浮动按钮 -->
+    <div class="cart-button">
+        <div class="cart-badge">2</div>
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
         </svg>
-        <div class="badge">2</div>
     </div>
 
-    <!-- 底部导航栏 -->
-    <div class="bottom-nav flex">
-        <div class="nav-item active flex-1">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
+    <!-- 底部标签栏 -->
+    <div class="tab-bar">
+        <div class="tab-item t-primary">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
             </svg>
-            <div class="mt-1">点单</div>
+            <span>点单</span>
         </div>
-        <div class="nav-item flex-1">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" />
+        <div class="tab-item text-gray-400">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
             </svg>
-            <div class="mt-1">我的</div>
+            <span>我的</span>
         </div>
     </div>
 </body>

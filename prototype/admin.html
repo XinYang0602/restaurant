@@ -3,217 +3,315 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>管理员订单页</title>
+    <title>管理员订单管理</title>
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     <style>
         body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-            background-color: #f5f7fa;
+            font-family: 'PingFang SC', 'Microsoft YaHei', sans-serif;
+            background-color: #f5f5f5;
             height: 100vh;
-            overflow: hidden;
+            margin: 0;
+            padding: 0;
         }
-        .orders-container {
-            height: calc(100vh - 56px);
-            overflow-y: auto;
+        .t-primary {
+            color: #0052d9;
         }
-        .order-card {
-            background-color: white;
+        .t-bg-primary {
+            background-color: #0052d9;
+        }
+        .t-card {
             border-radius: 8px;
             overflow: hidden;
-            margin-bottom: 12px;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            background: white;
+            box-shadow: 0 1px 6px rgba(0, 0, 0, 0.08);
+            margin-bottom: 16px;
+        }
+        .t-button {
+            background-color: #0052d9;
+            color: white;
+            border-radius: 4px;
+            padding: 8px 16px;
+            font-size: 14px;
+            font-weight: 500;
+            border: none;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        .t-button.outline {
+            background-color: white;
+            color: #0052d9;
+            border: 1px solid #0052d9;
+        }
+        .t-button.success {
+            background-color: #52c41a;
+            color: white;
+        }
+        .t-tab {
+            display: inline-block;
+            padding: 12px 16px;
+            font-size: 14px;
+            cursor: pointer;
+            border-bottom: 2px solid transparent;
+            transition: all 0.2s;
+        }
+        .t-tab.active {
+            color: #0052d9;
+            border-bottom-color: #0052d9;
+        }
+        .status-bar {
+            height: 44px;
+            background-color: #ffffff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 0 16px;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+            border-bottom: 1px solid #f0f0f0;
+        }
+        .order-time {
+            font-size: 12px;
+            color: #999;
+            margin-bottom: 4px;
         }
         .tag {
+            display: inline-block;
             padding: 2px 8px;
             border-radius: 4px;
             font-size: 12px;
         }
-        .tag-pending {
-            background-color: rgba(0,82,217,0.1);
+        .tag.processing {
             color: #0052d9;
+            background-color: #f0f6ff;
         }
-        .tag-processing {
-            background-color: rgba(255,159,0,0.1);
-            color: #ff9f00;
+        .tag.completed {
+            color: #52c41a;
+            background-color: #f6ffed;
         }
-        .tag-completed {
-            background-color: rgba(0,168,112,0.1);
-            color: #00a870;
-        }
-        .action-btn {
-            border-radius: 4px;
-            padding: 4px 12px;
+        .menu-badge {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 12px;
             font-size: 12px;
-            font-weight: 500;
+            background-color: #f5f5f5;
+            color: #666;
+            margin-right: 6px;
         }
-        .primary-btn {
-            background-color: #0052d9;
-            color: white;
-        }
-        .secondary-btn {
-            background-color: rgba(0,82,217,0.1);
-            color: #0052d9;
-        }
-        .tab-item {
-            padding: 12px 16px;
-            text-align: center;
+        .order-content {
+            margin-top: 8px;
             font-size: 14px;
-            cursor: pointer;
-            position: relative;
+            padding-left: 12px;
+            border-left: 2px solid #f0f0f0;
         }
-        .tab-item.active {
-            color: #0052d9;
-            font-weight: 500;
-        }
-        .tab-item.active::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 16px;
-            height: 2px;
-            background-color: #0052d9;
+        .order-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 12px;
+            padding-top: 12px;
+            border-top: 1px solid #f0f0f0;
         }
     </style>
 </head>
-<body class="text-gray-800">
-    <!-- 顶部标题栏 -->
-    <div class="p-3 bg-white flex items-center justify-between border-b border-gray-200">
-        <div class="text-lg font-medium">订单管理</div>
-        <div class="flex items-center">
-            <div class="bg-gray-100 rounded-full p-1">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5 text-gray-500">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" />
-                </svg>
-            </div>
-            <div class="ml-2 text-sm font-medium">管理员</div>
-        </div>
+<body class="flex flex-col h-screen">
+    <!-- 状态栏 -->
+    <div class="status-bar">
+        <div class="font-medium">订单管理（管理员）</div>
     </div>
 
-    <!-- 订单状态标签页 -->
-    <div class="bg-white flex border-b border-gray-200">
-        <div class="tab-item active flex-1">全部订单</div>
-        <div class="tab-item flex-1">待处理</div>
-        <div class="tab-item flex-1">制作中</div>
-        <div class="tab-item flex-1">已完成</div>
+    <!-- 标签页 -->
+    <div class="bg-white border-b border-gray-200 overflow-x-auto">
+        <div class="flex">
+            <div class="t-tab active">
+                <span>全部订单</span>
+            </div>
+            <div class="t-tab">
+                <span>制作中</span>
+                <span class="ml-1 text-xs bg-red-500 text-white rounded-full px-2">3</span>
+            </div>
+            <div class="t-tab">
+                <span>已完成</span>
+            </div>
+        </div>
     </div>
 
     <!-- 订单列表 -->
-    <div class="orders-container p-3">
-        <!-- 待处理订单 -->
-        <div class="order-card">
-            <div class="bg-blue-50 p-3 flex justify-between items-center border-b border-gray-100">
-                <div>
-                    <div class="font-medium">订单 #2023120501</div>
-                    <div class="text-xs text-gray-500 mt-1">2023-12-05 12:30 (刚刚)</div>
-                </div>
-                <div class="tag tag-pending">待处理</div>
-            </div>
-            <div class="p-3">
-                <div class="flex items-center mb-2">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-4 h-4 text-gray-400 mr-1">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z" />
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z" />
-                    </svg>
-                    <span class="text-sm">桌号: 15号桌</span>
-                </div>
-                <div class="text-sm font-medium mb-1">宫保鸡丁 x1, 水煮鱼 x1, 米饭 x2</div>
-                <div class="text-xs text-gray-500 mb-2">备注：水煮鱼少放辣</div>
-                <div class="flex justify-between items-center mt-2 pt-2 border-t border-gray-100">
-                    <div class="text-sm">共4件商品</div>
-                    <div class="font-medium">¥92.00</div>
-                </div>
-                <div class="flex justify-end mt-3">
-                    <button class="action-btn secondary-btn mr-2">
-                        取消订单
-                    </button>
-                    <button class="action-btn primary-btn">
-                        开始制作
-                    </button>
-                </div>
-            </div>
-        </div>
-
+    <div class="flex-1 overflow-y-auto p-4">
         <!-- 制作中订单 -->
-        <div class="order-card">
-            <div class="bg-orange-50 p-3 flex justify-between items-center border-b border-gray-100">
-                <div>
-                    <div class="font-medium">订单 #2023120502</div>
-                    <div class="text-xs text-gray-500 mt-1">2023-12-05 12:25 (5分钟前)</div>
+        <div class="t-card">
+            <div class="p-4">
+                <div class="flex justify-between items-start">
+                    <div>
+                        <div class="order-time">2023-11-22 12:32</div>
+                        <div class="font-medium">订单 #2023112201</div>
+                    </div>
+                    <div class="tag processing">制作中</div>
                 </div>
-                <div class="tag tag-processing">制作中</div>
-            </div>
-            <div class="p-3">
-                <div class="flex items-center mb-2">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-4 h-4 text-gray-400 mr-1">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z" />
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z" />
-                    </svg>
-                    <span class="text-sm">桌号: 8号桌</span>
+                
+                <div class="order-content">
+                    <div class="flex justify-between items-center mb-2">
+                        <div class="flex-1">
+                            <span class="menu-badge">1x</span>
+                            <span>紫菜蛋花汤</span>
+                        </div>
+                        <div class="text-sm">¥12.00</div>
+                    </div>
+                    <div class="flex justify-between items-center mb-2">
+                        <div class="flex-1">
+                            <span class="menu-badge">2x</span>
+                            <span>麻婆豆腐</span>
+                        </div>
+                        <div class="text-sm">¥52.00</div>
+                    </div>
+                    <div class="flex justify-between items-center">
+                        <div class="flex-1">
+                            <span class="menu-badge">2x</span>
+                            <span>米饭</span>
+                        </div>
+                        <div class="text-sm">¥6.00</div>
+                    </div>
                 </div>
-                <div class="text-sm font-medium mb-1">麻婆豆腐 x1, 回锅肉 x1, 米饭 x2</div>
-                <div class="text-xs text-gray-500 mb-2">备注：无</div>
-                <div class="flex justify-between items-center mt-2 pt-2 border-t border-gray-100">
-                    <div class="text-sm">共4件商品</div>
-                    <div class="font-medium">¥74.00</div>
-                </div>
-                <div class="flex justify-end mt-3">
-                    <button class="action-btn primary-btn">
-                        完成订单
-                    </button>
-                </div>
-            </div>
-        </div>
-
-        <!-- 已完成订单 -->
-        <div class="order-card">
-            <div class="bg-green-50 p-3 flex justify-between items-center border-b border-gray-100">
-                <div>
-                    <div class="font-medium">订单 #2023120401</div>
-                    <div class="text-xs text-gray-500 mt-1">2023-12-04 18:45 (昨天)</div>
-                </div>
-                <div class="tag tag-completed">已完成</div>
-            </div>
-            <div class="p-3">
-                <div class="flex items-center mb-2">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-4 h-4 text-gray-400 mr-1">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z" />
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z" />
-                    </svg>
-                    <span class="text-sm">桌号: 3号桌</span>
-                </div>
-                <div class="text-sm font-medium mb-1">鱼香肉丝 x1, 水煮鱼 x1, 米饭 x2</div>
-                <div class="text-xs text-gray-500 mb-2">备注：无</div>
-                <div class="flex justify-between items-center mt-2 pt-2 border-t border-gray-100">
-                    <div class="text-sm">共4件商品</div>
-                    <div class="font-medium">¥86.00</div>
+                
+                <div class="order-footer">
+                    <div class="font-medium">
+                        <span>合计：</span>
+                        <span class="text-red-500">¥70.00</span>
+                    </div>
+                    <button class="t-button success">完成订单</button>
                 </div>
             </div>
         </div>
-
-        <!-- 已完成订单 -->
-        <div class="order-card">
-            <div class="bg-green-50 p-3 flex justify-between items-center border-b border-gray-100">
-                <div>
-                    <div class="font-medium">订单 #2023120301</div>
-                    <div class="text-xs text-gray-500 mt-1">2023-12-03 12:15 (2天前)</div>
+        
+        <div class="t-card">
+            <div class="p-4">
+                <div class="flex justify-between items-start">
+                    <div>
+                        <div class="order-time">2023-11-22 12:28</div>
+                        <div class="font-medium">订单 #2023112202</div>
+                    </div>
+                    <div class="tag processing">制作中</div>
                 </div>
-                <div class="tag tag-completed">已完成</div>
+                
+                <div class="order-content">
+                    <div class="flex justify-between items-center mb-2">
+                        <div class="flex-1">
+                            <span class="menu-badge">1x</span>
+                            <span>西红柿蛋汤</span>
+                        </div>
+                        <div class="text-sm">¥15.00</div>
+                    </div>
+                    <div class="flex justify-between items-center mb-2">
+                        <div class="flex-1">
+                            <span class="menu-badge">1x</span>
+                            <span>鱼香肉丝</span>
+                        </div>
+                        <div class="text-sm">¥32.00</div>
+                    </div>
+                    <div class="flex justify-between items-center">
+                        <div class="flex-1">
+                            <span class="menu-badge">1x</span>
+                            <span>米饭</span>
+                        </div>
+                        <div class="text-sm">¥3.00</div>
+                    </div>
+                </div>
+                
+                <div class="order-footer">
+                    <div class="font-medium">
+                        <span>合计：</span>
+                        <span class="text-red-500">¥50.00</span>
+                    </div>
+                    <button class="t-button success">完成订单</button>
+                </div>
             </div>
-            <div class="p-3">
-                <div class="flex items-center mb-2">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-4 h-4 text-gray-400 mr-1">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z" />
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z" />
-                    </svg>
-                    <span class="text-sm">桌号: 12号桌</span>
+        </div>
+        
+        <!-- 已完成订单 -->
+        <div class="t-card">
+            <div class="p-4">
+                <div class="flex justify-between items-start">
+                    <div>
+                        <div class="order-time">2023-11-22 12:05</div>
+                        <div class="font-medium">订单 #2023112203</div>
+                    </div>
+                    <div class="tag completed">已完成</div>
                 </div>
-                <div class="text-sm font-medium mb-1">麻婆豆腐 x1, 宫保鸡丁 x1, 米饭 x2</div>
-                <div class="text-xs text-gray-500 mb-2">备注：无</div>
-                <div class="flex justify-between items-center mt-2 pt-2 border-t border-gray-100">
-                    <div class="text-sm">共4件商品</div>
-                    <div class="font-medium">¥70.00</div>
+                
+                <div class="order-content">
+                    <div class="flex justify-between items-center mb-2">
+                        <div class="flex-1">
+                            <span class="menu-badge">1x</span>
+                            <span>酸辣汤</span>
+                        </div>
+                        <div class="text-sm">¥18.00</div>
+                    </div>
+                    <div class="flex justify-between items-center mb-2">
+                        <div class="flex-1">
+                            <span class="menu-badge">1x</span>
+                            <span>宫保鸡丁</span>
+                        </div>
+                        <div class="text-sm">¥38.00</div>
+                    </div>
+                    <div class="flex justify-between items-center">
+                        <div class="flex-1">
+                            <span class="menu-badge">2x</span>
+                            <span>米饭</span>
+                        </div>
+                        <div class="text-sm">¥6.00</div>
+                    </div>
+                </div>
+                
+                <div class="order-footer">
+                    <div class="font-medium">
+                        <span>合计：</span>
+                        <span class="text-red-500">¥62.00</span>
+                    </div>
+                    <div class="text-sm text-gray-500">12:20 完成</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="t-card">
+            <div class="p-4">
+                <div class="flex justify-between items-start">
+                    <div>
+                        <div class="order-time">2023-11-22 11:45</div>
+                        <div class="font-medium">订单 #2023112204</div>
+                    </div>
+                    <div class="tag completed">已完成</div>
+                </div>
+                
+                <div class="order-content">
+                    <div class="flex justify-between items-center mb-2">
+                        <div class="flex-1">
+                            <span class="menu-badge">1x</span>
+                            <span>冬瓜排骨汤</span>
+                        </div>
+                        <div class="text-sm">¥28.00</div>
+                    </div>
+                    <div class="flex justify-between items-center mb-2">
+                        <div class="flex-1">
+                            <span class="menu-badge">1x</span>
+                            <span>香菇青菜</span>
+                        </div>
+                        <div class="text-sm">¥22.00</div>
+                    </div>
+                    <div class="flex justify-between items-center">
+                        <div class="flex-1">
+                            <span class="menu-badge">1x</span>
+                            <span>米饭</span>
+                        </div>
+                        <div class="text-sm">¥3.00</div>
+                    </div>
+                </div>
+                
+                <div class="order-footer">
+                    <div class="font-medium">
+                        <span>合计：</span>
+                        <span class="text-red-500">¥53.00</span>
+                    </div>
+                    <div class="text-sm text-gray-500">12:00 完成</div>
                 </div>
             </div>
         </div>

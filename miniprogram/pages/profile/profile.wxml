@@ -1,0 +1,70 @@
+<!-- 个人中心页面 -->
+<view class="container">
+  <!-- 顶部状态栏 -->
+  <view class="status-bar">
+    <view class="status-title">个人中心</view>
+  </view>
+
+  <!-- 个人信息卡片 -->
+  <view class="profile-card">
+    <t-avatar 
+      class="avatar"
+      image="{{userInfo.avatarUrl || defaultAvatarUrl}}" 
+      size="large" 
+    />
+    <view class="profile-info">
+      <view class="profile-name">{{userInfo.nickName || '微信用户'}}</view>
+      <view class="profile-welcome">欢迎光临小杨私厨</view>
+    </view>
+    <t-button theme="primary" variant="outline" size="small" bindtap="editProfile">编辑</t-button>
+  </view>
+
+  <!-- 订单历史 -->
+  <view class="section-container">
+    <view class="section-header">
+      <text class="section-title">历史订单</text>
+      <view class="section-more" bindtap="viewAllOrders">
+        <text class="more-text">查看全部</text>
+        <t-icon name="chevron-right" size="40rpx" color="#0052d9" />
+      </view>
+    </view>
+    
+    <view wx:if="{{orders.length > 0}}">
+      <view wx:for="{{orders}}" wx:key="id" class="order-item">
+        <t-cell 
+          title="订单 #{{item.id}}" 
+          description="{{item.orderTimeFormatted}}"
+          note="¥{{item.totalPrice}}"
+          bordered="{{index !== orders.length - 1}}"
+          hover
+          bindtap="viewOrderDetail"
+          data-id="{{item.id}}"
+        >
+          <view slot="note-extra">
+            <t-tag theme="{{item.status === 'completed' ? 'success' : 'primary'}}" variant="light" size="small">
+              {{item.status === 'completed' ? '已完成' : '制作中'}}
+            </t-tag>
+          </view>
+        </t-cell>
+      </view>
+    </view>
+    <view wx:else class="empty-tip">
+      <t-icon name="info-circle" size="48rpx" color="#bbb" />
+      <text class="empty-text">暂无订单记录</text>
+    </view>
+  </view>
+
+  <!-- 其他设置 -->
+  <view class="section-container">
+    <t-cell-group theme="card">
+      <t-cell title="消息中心" leftIcon="mail" hover arrow />
+      <t-cell title="帮助与反馈" leftIcon="help-circle" hover arrow />
+      <t-cell title="设置" leftIcon="setting" hover arrow />
+    </t-cell-group>
+  </view>
+
+  <!-- 退出登录按钮 -->
+  <view class="logout-container">
+    <t-button theme="danger" variant="outline" block bindtap="logout">退出登录</t-button>
+  </view>
+</view> 
