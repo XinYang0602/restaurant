@@ -53,56 +53,119 @@ Page({
     }
     
     // 获取所有菜品数据
-    const allDishes = this.getAllDishes();
-    
-    // 根据购物车获取菜品详情
-    const cartItems: CartItem[] = [];
-    let totalCount = 0;
-    let totalPrice = 0;
-    
-    cart.forEach((item: {id: string, count: number}) => {
-      const dish = allDishes.find(d => d.id === item.id);
-      if (dish) {
-        const itemTotalPrice = dish.price * item.count;
-        cartItems.push({
-          id: dish.id,
-          name: dish.name,
-          price: dish.price,
-          count: item.count,
-          totalPrice: itemTotalPrice
-        });
-        
-        totalCount += item.count;
-        totalPrice += itemTotalPrice;
-      }
-    });
-    
-    this.setData({
-      cartItems,
-      totalCount,
-      totalPrice: totalPrice.toFixed(2)
+    this.getAllDishes().then(allDishes => {
+      // 根据购物车获取菜品详情
+      const cartItems: CartItem[] = [];
+      let totalCount = 0;
+      let totalPrice = 0;
+      
+      cart.forEach((item: {id: string, count: number}) => {
+        const dish = allDishes.find(d => d.id === item.id);
+        if (dish) {
+          const itemTotalPrice = dish.price * item.count;
+          cartItems.push({
+            id: dish.id,
+            name: dish.name,
+            price: dish.price,
+            count: item.count,
+            totalPrice: itemTotalPrice
+          });
+          
+          totalCount += item.count;
+          totalPrice += itemTotalPrice;
+        }
+      });
+      
+      this.setData({
+        cartItems,
+        totalCount,
+        totalPrice: totalPrice.toFixed(2)
+      });
+    }).catch(error => {
+      console.error('获取菜品数据失败', error);
+      wx.showToast({
+        title: '获取菜品数据失败',
+        icon: 'none'
+      });
     });
   },
 
-  // 获取所有菜品数据
-  getAllDishes(): Dish[] {
-    // 从页面栈获取首页实例，以便访问dishes数据
-    const pages = getCurrentPages();
-    const indexPage = pages.find(page => page.route === 'pages/index/index');
-    
-    if (!indexPage) {
-      return [];
+  // 获取所有菜品数据，支持从云端或本地获取
+  async getAllDishes(): Promise<Dish[]> {
+    try {
+      // 尝试从页面栈获取首页已加载的数据
+      const pages = getCurrentPages();
+      const indexPage = pages.find(page => page.route === 'pages/index/index');
+      
+      if (indexPage && (indexPage as any).data.isCloudDataLoaded) {
+        // 如果首页已加载云端数据，直接使用
+        const dishes = (indexPage as any).data.dishes as DishesData;
+        const allDishes: Dish[] = [];
+        
+        // 将所有分类的菜品合并到一个数组
+        Object.keys(dishes).forEach(categoryId => {
+          allDishes.push(...dishes[Number(categoryId)]);
+        });
+        
+        return allDishes;
+      } else {
+        // 如果首页没有加载云端数据，或者不在页面栈中，尝试从云端直接获取
+        // 或者尝试从缓存中获取
+        const cachedDishes = wx.getStorageSync('dishes');
+        if (cachedDishes) {
+          return this.flattenDishes(cachedDishes);
+        }
+        
+        // 尝试从云端获取
+        const res = await wx.cloud.callFunction({
+          name: 'getDishes',
+          data: {}
+        });
+        
+        const cloudDishes = res.result as DishesData;
+        // 缓存到本地
+        wx.setStorageSync('dishes', cloudDishes);
+        return this.flattenDishes(cloudDishes);
+      }
+    } catch (error) {
+      console.error('获取菜品数据失败', error);
+      // 尝试使用本地默认数据
+      return this.getDefaultDishes();
     }
-    
-    const dishes = (indexPage as any).data.dishes as DishesData;
+  },
+
+  // 将分类菜品数据转为扁平数组
+  flattenDishes(dishes: DishesData): Dish[] {
     const allDishes: Dish[] = [];
     
-    // 将所有分类的菜品合并到一个数组
     Object.keys(dishes).forEach(categoryId => {
       allDishes.push(...dishes[Number(categoryId)]);
     });
     
     return allDishes;
+  },
+
+  // 获取本地默认菜品数据（当云端和缓存都失败时使用）
+  getDefaultDishes(): Dish[] {
+    // 模拟一些默认菜品
+    return [
+      { 
+        id: '001', 
+        name: '紫菜蛋花汤', 
+        price: 12, 
+        description: '鲜美味道，营养丰富',
+        image: 'https://images.unsplash.com/photo-1582878826629-29b7ad1cdc43?ixlib=rb-1.2.1&auto=format&fit=crop&w=1567&q=80',
+        count: 0
+      },
+      { 
+        id: '101', 
+        name: '麻婆豆腐', 
+        price: 26, 
+        description: '麻辣鲜香，入口即化',
+        image: 'https://images.unsplash.com/photo-1582003457856-20898dd7e1ea?ixlib=rb-1.2.1&auto=format&fit=crop&w=1500&q=80',
+        count: 0
+      }
+    ];
   },
 
   // 增加菜品数量

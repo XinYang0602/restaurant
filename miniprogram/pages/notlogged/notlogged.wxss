@@ -1,0 +1,42 @@
+/* notlogged.wxss */
+.content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 80vh;
+  padding: 40rpx;
+}
+
+.text-center {
+  text-align: center;
+}
+
+.mt-4 {
+  margin-top: 16rpx;
+}
+
+.mt-2 {
+  margin-top: 8rpx;
+}
+
+.text-xl {
+  font-size: 36rpx;
+}
+
+.font-medium {
+  font-weight: 500;
+}
+
+.text-gray-700 {
+  color: #374151;
+}
+
+.text-gray-500 {
+  color: #6b7280;
+}
+
+.login-button {
+  margin-top: 60rpx;
+  width: 100%;
+} 

@@ -1,0 +1,23 @@
+<!--notlogged.wxml-->
+<t-navbar title="个人中心" background="#ffffff" title-color="#333333" border></t-navbar>
+
+<!-- 主要内容区域 -->
+<view class="content">
+  <view class="text-center">
+    <t-icon name="user" size="48" color="#999999"></t-icon>
+    <view class="mt-4 text-xl font-medium text-gray-700">请先登录</view>
+    <view class="mt-2 text-gray-500">登录后可以查看您的订单和个人信息</view>
+
+    <!-- 微信一键登录按钮 -->
+    <t-button class="login-button" theme="primary" size="large" bindtap="handleLogin">
+      <t-icon name="wechat" slot="icon"></t-icon>
+      微信一键登录
+    </t-button>
+  </view>
+</view>
+
+<!-- 底部标签栏 -->
+<t-tabbar>
+  <t-tabbar-item key="home" icon="home" text="点单"></t-tabbar-item>
+  <t-tabbar-item key="profile" icon="user" text="我的" active></t-tabbar-item>
+</t-tabbar> 

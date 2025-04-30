@@ -50,103 +50,142 @@ Component({
       { id: 4, name: '主食' },
       { id: 5, name: '饮料' }
     ] as Category[],
-    dishes: {
-      0: [ // 汤品
-        { 
-          id: '001', 
-          name: '紫菜蛋花汤', 
-          price: 12, 
-          description: '鲜美味道，营养丰富',
-          image: 'https://images.unsplash.com/photo-1582878826629-29b7ad1cdc43?ixlib=rb-1.2.1&auto=format&fit=crop&w=1567&q=80',
-          count: 0
-        },
-        { 
-          id: '002', 
-          name: '酸辣汤', 
-          price: 18, 
-          description: '经典川菜风味，酸辣可口',
-          image: 'https://images.unsplash.com/photo-1613844237701-8f3664fc2eff?ixlib=rb-1.2.1&auto=format&fit=crop&w=1567&q=80',
-          count: 0
-        },
-        { 
-          id: '003', 
-          name: '西红柿蛋汤', 
-          price: 15, 
-          description: '番茄鲜香，温暖舒适',
-          image: 'https://images.unsplash.com/photo-1626201850121-3f78f2f546b2?ixlib=rb-1.2.1&auto=format&fit=crop&w=1567&q=80',
-          count: 0
-        },
-        { 
-          id: '004', 
-          name: '冬瓜排骨汤', 
-          price: 28, 
-          description: '清爽滋补，肉香四溢',
-          image: 'https://images.unsplash.com/photo-1623855244183-52fd8d3ce2f7?ixlib=rb-1.2.1&auto=format&fit=crop&w=1567&q=80',
-          count: 0
-        }
-      ],
-      1: [ // 川菜
-        { 
-          id: '101', 
-          name: '麻婆豆腐', 
-          price: 26, 
-          description: '麻辣鲜香，入口即化',
-          image: 'https://images.unsplash.com/photo-1582003457856-20898dd7e1ea?ixlib=rb-1.2.1&auto=format&fit=crop&w=1500&q=80',
-          count: 0
-        },
-        { 
-          id: '102', 
-          name: '宫保鸡丁', 
-          price: 38, 
-          description: '咸甜适中，花生酥脆',
-          image: 'https://images.unsplash.com/photo-1619683548293-866c5b805c89?ixlib=rb-1.2.1&auto=format&fit=crop&w=1500&q=80',
-          count: 0
-        }
-      ],
-      2: [ // 素菜
-        { 
-          id: '201', 
-          name: '清炒时蔬', 
-          price: 18, 
-          description: '新鲜应季蔬菜',
-          image: 'https://images.unsplash.com/photo-1576866209830-589e1bfbaa4d?ixlib=rb-1.2.1&auto=format&fit=crop&w=1500&q=80',
-          count: 0
-        }
-      ],
-      3: [ // 肉菜 
-        { 
-          id: '301', 
-          name: '红烧肉', 
-          price: 42, 
-          description: '入口即化，肥而不腻',
-          image: 'https://images.unsplash.com/photo-1623161551727-7456779dda5a?ixlib=rb-1.2.1&auto=format&fit=crop&w=1500&q=80',
-          count: 0
-        }
-      ],
-      4: [ // 主食
-        { 
-          id: '401', 
-          name: '米饭', 
-          price: 3, 
-          description: '粒粒分明，香气扑鼻',
-          image: 'https://images.unsplash.com/photo-1594489428504-5c4212155e42?ixlib=rb-1.2.1&auto=format&fit=crop&w=1500&q=80',
-          count: 0
-        }
-      ],
-      5: [ // 饮料
-        { 
-          id: '501', 
-          name: '可乐', 
-          price: 6, 
-          description: '冰镇可乐，畅爽一夏',
-          image: 'https://images.unsplash.com/photo-1554866585-cd94860890b7?ixlib=rb-1.2.1&auto=format&fit=crop&w=1500&q=80',
-          count: 0
-        }
-      ]
-    } as DishesData,
+    dishes: {} as DishesData,
+    isCloudDataLoaded: false,
     cart: [] as CartItem[]
   },
   methods: {
+    // 新增方法：从云端获取菜品数据
+    async fetchDishesFromCloud() {
+      try {
+        const res = await wx.cloud.callFunction({
+          name: 'getDishes',
+          data: {}
+        });
+        const cloudDishes = res.result as DishesData;
+        this.setData({
+          dishes: cloudDishes,
+          isCloudDataLoaded: true
+        });
+      } catch (error) {
+        console.error('云端数据加载失败，使用本地数据:', error);
+        this.setData({
+          dishes: this.getDefaultDishes(),
+          isCloudDataLoaded: false
+        });
+      }
+    },
+
+    // 获取本地默认数据
+    getDefaultDishes(): DishesData {
+      return {
+        0: [
+          { 
+            id: '001', 
+            name: '紫菜蛋花汤', 
+            price: 12, 
+            description: '鲜美味道，营养丰富',
+            image: 'https://images.unsplash.com/photo-1582878826629-29b7ad1cdc43?ixlib=rb-1.2.1&auto=format&fit=crop&w=1567&q=80',
+            count: 0
+          },
+          { 
+            id: '002', 
+            name: '酸辣汤', 
+            price: 18, 
+            description: '经典川菜风味，酸辣可口',
+            image: 'https://images.unsplash.com/photo-1613844237701-8f3664fc2eff?ixlib=rb-1.2.1&auto=format&fit=crop&w=1567&q=80',
+            count: 0
+          },
+          { 
+            id: '003', 
+            name: '西红柿蛋汤', 
+            price: 15, 
+            description: '番茄鲜香，温暖舒适',
+            image: 'https://images.unsplash.com/photo-1626201850121-3f78f2f546b2?ixlib=rb-1.2.1&auto=format&fit=crop&w=1567&q=80',
+            count: 0
+          },
+          { 
+            id: '004', 
+            name: '冬瓜排骨汤', 
+            price: 28, 
+            description: '清爽滋补，肉香四溢',
+            image: 'https://images.unsplash.com/photo-1623855244183-52fd8d3ce2f7?ixlib=rb-1.2.1&auto=format&fit=crop&w=1567&q=80',
+            count: 0
+          }
+        ],
+        1: [
+          { 
+            id: '101', 
+            name: '麻婆豆腐', 
+            price: 26, 
+            description: '麻辣鲜香，入口即化',
+            image: 'https://images.unsplash.com/photo-1582003457856-20898dd7e1ea?ixlib=rb-1.2.1&auto=format&fit=crop&w=1500&q=80',
+            count: 0
+          },
+          { 
+            id: '102', 
+            name: '宫保鸡丁', 
+            price: 38, 
+            description: '咸甜适中，花生酥脆',
+            image: 'https://images.unsplash.com/photo-1619683548293-866c5b805c89?ixlib=rb-1.2.1&auto=format&fit=crop&w=1500&q=80',
+            count: 0
+          }
+        ],
+        2: [
+          { 
+            id: '201', 
+            name: '清炒时蔬', 
+            price: 18, 
+            description: '新鲜应季蔬菜',
+            image: 'https://images.unsplash.com/photo-1576866209830-589e1bfbaa4d?ixlib=rb-1.2.1&auto=format&fit=crop&w=1500&q=80',
+            count: 0
+          }
+        ],
+        3: [
+          { 
+            id: '301', 
+            name: '红烧肉', 
+            price: 42, 
+            description: '入口即化，肥而不腻',
+            image: 'https://images.unsplash.com/photo-1623161551727-7456779dda5a?ixlib=rb-1.2.1&auto=format&fit=crop&w=1500&q=80',
+            count: 0
+          }
+        ],
+        4: [
+          { 
+            id: '401', 
+            name: '米饭', 
+            price: 3, 
+            description: '粒粒分明，香气扑鼻',
+            image: 'https://images.unsplash.com/photo-1594489428504-5c4212155e42?ixlib=rb-1.2.1&auto=format&fit=crop&w=1500&q=80',
+            count: 0
+          }
+        ],
+        5: [
+          { 
+            id: '501', 
+            name: '可乐', 
+            price: 6, 
+            description: '冰镇可乐，畅爽一夏',
+            image: 'https://images.unsplash.com/photo-1554866585-cd94860890b7?ixlib=rb-1.2.1&auto=format&fit=crop&w=1500&q=80',
+            count: 0
+          }
+        ]
+      };
+    },
+
+    onLoad() {
+      // 从云端加载数据
+      this.fetchDishesFromCloud();
+      // 从本地存储读取购物车数据
+      const cart = wx.getStorageSync('cart') || [];
+      this.setData({
+        cart: cart,
+        cartCount: cart.reduce((acc: number, item: CartItem) => acc + item.count, 0)
+      });
+      // 根据购物车更新菜品数量
+      this.updateDishesCount();
+    },
     // 事件处理函数
     bindViewTap() {
       wx.navigateTo({
@@ -266,18 +305,6 @@ Component({
           icon: 'none'
         });
       }
-    },
-    onLoad() {
-      // 从本地存储读取购物车数据
-      const cart = wx.getStorageSync('cart') || [];
-      
-      this.setData({
-        cart: cart,
-        cartCount: cart.reduce((acc: number, item: CartItem) => acc + item.count, 0)
-      });
-      
-      // 根据购物车更新菜品数量
-      this.updateDishesCount();
     },
     // 根据购物车更新菜品数量
     updateDishesCount() {

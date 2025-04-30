@@ -1,5 +1,5 @@
 <!--index.wxml-->
-<view class="container">
+  <view class="container">
   <!-- 顶部状态栏 -->
   <view class="status-bar">
     <text class="status-title">小杨私厨</text>
@@ -7,7 +7,7 @@
 
   <view class="content-container">
     <!-- 左侧分类栏 -->
-    <scroll-view scroll-y class="category-bar">
+    <scroll-view scroll-y class="category-bar" enhanced="true" show-scrollbar="false">
       <view wx:for="{{categories}}" wx:key="id" bindtap="switchCategory" data-id="{{item.id}}" 
         class="category-item {{currentCategory === item.id ? 'category-active' : ''}}">
         <text>{{item.name}}</text>
@@ -15,35 +15,33 @@
     </scroll-view>
 
     <!-- 右侧菜品列表 -->
-    <scroll-view scroll-y class="dish-list" enhanced="true" show-scrollbar="true">
+    <scroll-view scroll-y class="dish-list" enhanced="true" show-scrollbar="false">
       <view class="category-title">{{categories[currentCategory].name}}</view>
       
       <view wx:for="{{dishes[currentCategory]}}" wx:key="id" class="dish-card">
-        <t-card>
-          <view slot="content" class="dish-content">
-            <t-image src="{{item.image}}" mode="aspectFill" width="96" height="96" 
-              shape="round" class="dish-image"></t-image>
-            <view class="dish-info">
-              <view class="dish-name">{{item.name}}</view>
-              <view class="dish-desc">{{item.description}}</view>
-              <view class="dish-price-action">
-                <text class="dish-price">¥{{item.price}}</text>
-                <view class="dish-counter" wx:if="{{item.count > 0}}">
-                  <t-button theme="primary" size="small" icon="remove" shape="circle" variant="outline" 
-                    bindtap="decreaseDish" data-id="{{item.id}}"></t-button>
-                  <text class="counter-number">{{item.count}}</text>
-                  <t-button theme="primary" size="small" icon="add" shape="circle" 
-                    bindtap="increaseDish" data-id="{{item.id}}"></t-button>
-                </view>
-                <t-button wx:else theme="primary" size="small" icon="add" shape="circle" 
+        <view class="dish-content">
+          <t-image src="{{item.image}}" mode="aspectFill" width="96" height="96" 
+            shape="round" class="dish-image"></t-image>
+          <view class="dish-info">
+            <view class="dish-name">{{item.name}}</view>
+            <view class="dish-desc">{{item.description}}</view>
+            <view class="dish-price-action">
+              <text class="dish-price">¥{{item.price}}</text>
+              <view class="dish-counter" wx:if="{{item.count > 0}}">
+                <t-button theme="primary" size="small" icon="remove" shape="circle" variant="outline" 
+                  bindtap="decreaseDish" data-id="{{item.id}}"></t-button>
+                <text class="counter-number">{{item.count}}</text>
+                <t-button theme="primary" size="small" icon="add" shape="circle" 
                   bindtap="increaseDish" data-id="{{item.id}}"></t-button>
               </view>
+              <t-button wx:else theme="primary" size="small" icon="add" shape="circle" 
+                bindtap="increaseDish" data-id="{{item.id}}"></t-button>
             </view>
           </view>
-        </t-card>
-      </view>
+        </view>
+    </view>
     </scroll-view>
-  </view>
+    </view>
 
   <!-- 购物车浮动按钮 -->
   <view class="cart-button" bindtap="goToOrder">
