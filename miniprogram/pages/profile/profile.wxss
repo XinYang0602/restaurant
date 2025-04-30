@@ -109,4 +109,15 @@
 .logout-container {
   margin: 60rpx 30rpx;
   width: calc(100% - 60rpx);
+}
+
+/* 确保底部标签栏显示 */
+.t-tabbar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 100;
+  box-shadow: 0 -2rpx 10rpx rgba(0, 0, 0, 0.05);
+  background-color: #ffffff;
 } 

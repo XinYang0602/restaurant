@@ -18,6 +18,6 @@
 
 <!-- 底部标签栏 -->
 <t-tabbar>
-  <t-tabbar-item key="home" icon="home" text="点单"></t-tabbar-item>
+  <t-tabbar-item key="home" icon="home" text="点单" bindtap="switchToHome"></t-tabbar-item>
   <t-tabbar-item key="profile" icon="user" text="我的" active></t-tabbar-item>
 </t-tabbar> 

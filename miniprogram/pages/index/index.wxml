@@ -1,10 +1,10 @@
 <!--index.wxml-->
-  <view class="container">
+<view class="container">
   <!-- 顶部状态栏 -->
   <view class="status-bar">
     <text class="status-title">小杨私厨</text>
   </view>
-
+  
   <view class="content-container">
     <!-- 左侧分类栏 -->
     <scroll-view scroll-y class="category-bar" enhanced="true" show-scrollbar="false">
@@ -39,9 +39,9 @@
             </view>
           </view>
         </view>
-    </view>
+      </view>
     </scroll-view>
-    </view>
+  </view>
 
   <!-- 购物车浮动按钮 -->
   <view class="cart-button" bindtap="goToOrder">
@@ -50,3 +50,4 @@
     </t-badge>
   </view>
 </view>
+

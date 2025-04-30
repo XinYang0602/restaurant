@@ -1,6 +1,6 @@
 // index.ts
 // 获取应用实例
-const app = getApp<IAppOption>()
+const app = getApp()
 const defaultAvatarUrl = 'https://mmbiz.qpic.cn/mmbiz/icTdbqWNOwNRna42FI242Lcia07jQodd2FJGIYQfG0LAJGFxM4FbnQP6yfMxBgJ0F3YRqJCJ1aPAK2dQagdusBZg/0'
 
 // 定义菜品类型
@@ -28,6 +28,24 @@ interface Category {
 // 定义菜品数据类型
 interface DishesData {
   [key: string]: Dish[];
+}
+
+// 定义登录响应类型
+interface LoginResult {
+  code: number;
+  message: string;
+  isNewUser?: boolean;
+  openid?: string;
+}
+
+// 修复IAppOption类型错误
+declare global {
+  interface IAppOption {
+    globalData: {
+      userInfo?: WechatMiniprogram.UserInfo;
+    };
+    userInfoReadyCallback?: (res: WechatMiniprogram.UserInfo) => void;
+  }
 }
 
 Component({
@@ -175,23 +193,41 @@ Component({
     },
 
     onLoad() {
+      // 检查用户登录状态
+      this.checkUserLoginStatus();
+      
       // 从云端加载数据
       this.fetchDishesFromCloud();
+      
       // 从本地存储读取购物车数据
       const cart = wx.getStorageSync('cart') || [];
       this.setData({
         cart: cart,
         cartCount: cart.reduce((acc: number, item: CartItem) => acc + item.count, 0)
       });
+      
       // 根据购物车更新菜品数量
       this.updateDishesCount();
     },
+    
+    // 检查用户登录状态
+    checkUserLoginStatus() {
+      const userInfo = wx.getStorageSync('userInfo');
+      if (userInfo) {
+        this.setData({
+          userInfo,
+          hasUserInfo: true
+        });
+      }
+    },
+    
     // 事件处理函数
     bindViewTap() {
       wx.navigateTo({
         url: '../logs/logs',
       })
     },
+    
     onChooseAvatar(e: any) {
       const { avatarUrl } = e.detail
       const { nickName } = this.data.userInfo
@@ -200,6 +236,7 @@ Component({
         hasUserInfo: nickName && avatarUrl && avatarUrl !== defaultAvatarUrl,
       })
     },
+    
     onInputChange(e: any) {
       const nickName = e.detail.value
       const { avatarUrl } = this.data.userInfo
@@ -208,6 +245,7 @@ Component({
         hasUserInfo: nickName && avatarUrl && avatarUrl !== defaultAvatarUrl,
       })
     },
+    
     getUserProfile() {
       // 推荐使用wx.getUserProfile获取用户信息，开发者每次通过该接口获取用户个人信息均需用户确认，开发者妥善保管用户快速填写的头像昵称，避免重复弹窗
       wx.getUserProfile({
@@ -221,6 +259,7 @@ Component({
         }
       })
     },
+    
     // 切换分类
     switchCategory(e: WechatMiniprogram.CustomEvent) {
       const id = e.currentTarget.dataset.id as number;
@@ -228,6 +267,7 @@ Component({
         currentCategory: id
       });
     },
+    
     // 增加菜品数量
     increaseDish(e: WechatMiniprogram.CustomEvent) {
       const id = e.currentTarget.dataset.id as string;
@@ -248,6 +288,7 @@ Component({
         });
       }
     },
+    
     // 减少菜品数量
     decreaseDish(e: WechatMiniprogram.CustomEvent) {
       const id = e.currentTarget.dataset.id as string;
@@ -268,6 +309,7 @@ Component({
         });
       }
     },
+    
     // 更新购物车
     updateCart(id: string, count: number) {
       const cart = this.data.cart;
@@ -289,10 +331,12 @@ Component({
       
       wx.setStorageSync('cart', cart);
     },
+    
     // 获取购物车总数量
     getCartCount(): number {
       return this.data.cart.reduce((acc: number, item: CartItem) => acc + item.count, 0);
     },
+    
     // 跳转到订单页
     goToOrder() {
       if (this.data.cartCount > 0) {
@@ -306,6 +350,7 @@ Component({
         });
       }
     },
+    
     // 根据购物车更新菜品数量
     updateDishesCount() {
       const dishes = this.data.dishes;
@@ -331,6 +376,86 @@ Component({
       });
       
       this.setData({ dishes });
+    },
+    
+    // 处理用户登录
+    async handleLogin() {
+      try {
+        // 显示加载提示
+        wx.showLoading({
+          title: '登录中...',
+          mask: true
+        });
+        
+        console.log('开始登录流程');
+        
+        // 获取用户信息
+        console.log('请求用户信息');
+        const userProfileRes = await wx.getUserProfile({
+          desc: '用于完善会员资料'
+        });
+        
+        const userInfo = userProfileRes.userInfo;
+        console.log('获取到用户信息:', userInfo);
+        
+        // 调用云函数
+        console.log('调用云函数userLogin');
+        const loginRes = await wx.cloud.callFunction({
+          name: 'userLogin',
+          data: {
+            userInfo
+          }
+        });
+        
+        console.log('云函数返回结果:', loginRes);
+        
+        // 隐藏加载提示
+        wx.hideLoading();
+        
+        // 类型断言确保类型安全
+        const result = (loginRes.result || {}) as LoginResult;
+        
+        if (result.code === 200) {
+          console.log('登录成功, openid:', result.openid);
+          // 登录成功处理
+          this.setData({
+            userInfo,
+            hasUserInfo: true
+          });
+          
+          // 保存用户信息到本地存储
+          wx.setStorageSync('userInfo', userInfo);
+          wx.setStorageSync('openid', result.openid || '');
+          
+          // 根据是否是新用户显示不同提示
+          wx.showToast({
+            title: result.isNewUser ? '注册成功' : '登录成功',
+            icon: 'success',
+            duration: 2000
+          });
+          
+          // 如果在登录页，登录成功后返回上一页
+          const pages = getCurrentPages();
+          if (pages.length > 1 && pages[pages.length - 1].route?.includes('notlogged')) {
+            setTimeout(() => {
+              wx.navigateBack();
+            }, 1000);
+          }
+        } else {
+          console.error('登录返回错误码:', result.code, result.message);
+          throw new Error(result.message || '登录失败');
+        }
+      } catch (err: any) {
+        console.error('登录过程发生错误:', err);
+        wx.hideLoading();
+        
+        // 处理登录失败情况
+        wx.showToast({
+          title: err.message || '登录失败，请重试',
+          icon: 'none',
+          duration: 2000
+        });
+      }
     }
   },
 })

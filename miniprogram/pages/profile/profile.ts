@@ -165,5 +165,12 @@ Page({
         }
       }
     });
+  },
+
+  // 切换到底部标签栏主页
+  switchToHome() {
+    wx.switchTab({
+      url: '/pages/index/index'
+    });
   }
 }) 

@@ -38,5 +38,7 @@
 
 .login-button {
   margin-top: 60rpx;
-  width: 100%;
+  width: 80%;
+  border-radius: 12rpx;
+  box-shadow: 0 4rpx 12rpx rgba(0, 0, 0, 0.1);
 } 
