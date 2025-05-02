@@ -4,7 +4,9 @@
     "pages/order/order",
     "pages/profile/profile",
     "pages/admin/admin",
-    "pages/notlogged/notlogged"
+    "pages/notlogged/notlogged",
+    "pages/backend/backend",
+    "pages/edit-dish/edit-dish"
   ],
   "window": {
     "navigationBarTextStyle": "black",
@@ -26,7 +28,7 @@
         "selectedIconPath": "assets/icon/menu_selected.png"
       },
       {
-        "pagePath": "pages/notlogged/notlogged",
+        "pagePath": "pages/profile/profile",
         "text": "我的",
         "iconPath": "assets/icon/user.png",
         "selectedIconPath": "assets/icon/user_selected.png"

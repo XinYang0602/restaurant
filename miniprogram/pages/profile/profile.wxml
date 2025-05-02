@@ -5,72 +5,112 @@
     <view class="status-title">个人中心</view>
   </view>
 
-  <!-- 个人信息卡片 -->
-  <view class="profile-card">
-    <t-avatar 
-      class="avatar"
-      image="{{userInfo.avatarUrl || defaultAvatarUrl}}" 
-      size="large" 
-    />
-    <view class="profile-info">
-      <view class="profile-name">{{userInfo.nickName || '微信用户'}}</view>
-      <view class="profile-welcome">欢迎光临小杨私厨</view>
+  <!-- 未登录状态 -->
+  <view wx:if="{{!isLoggedIn}}" class="not-logged-container">
+    <view class="text-center">
+      <t-icon name="user" size="48" color="#999999"></t-icon>
+      <view class="mt-4 text-xl font-medium text-gray-700">请先登录</view>
+      <view class="mt-2 text-gray-500">登录后可以查看您的订单和个人信息</view>
+
+      <!-- 微信一键登录按钮 -->
+      <t-button class="login-button" theme="primary" size="large" bindtap="gotoLogin">
+        <t-icon name="wechat" slot="icon"></t-icon>
+        微信一键登录
+      </t-button>
     </view>
-    <t-button theme="primary" variant="outline" size="small" bindtap="editProfile">编辑</t-button>
   </view>
 
-  <!-- 订单历史 -->
-  <view class="section-container">
-    <view class="section-header">
-      <text class="section-title">历史订单</text>
-      <view class="section-more" bindtap="viewAllOrders">
-        <text class="more-text">查看全部</text>
-        <t-icon name="chevron-right" size="40rpx" color="#0052d9" />
+  <!-- 已登录状态 -->
+  <block wx:else>
+    <!-- 个人信息卡片 -->
+    <view class="profile-card">
+      <t-avatar 
+        class="avatar"
+        image="{{userInfo.avatarUrl || defaultAvatarUrl}}" 
+        size="large" 
+      />
+      <view class="profile-info">
+        <view class="profile-name">{{userInfo.nickName || '微信用户'}}</view>
+        <view class="profile-welcome">欢迎光临小杨私厨</view>
+      </view>
+      <t-button theme="primary" variant="outline" size="small" bindtap="editProfile">编辑</t-button>
+    </view>
+
+    <!-- 超级管理员入口 - 仅对特定openid显示 -->
+    <view wx:if="{{isSuperAdmin}}" class="super-admin-container">
+      <view class="admin-buttons">
+        <t-button theme="primary" size="large" bindtap="goToAdmin" icon="dashboard">
+          进入管理后台
+        </t-button>
+        <t-button theme="danger" size="large" bindtap="goToBackend" icon="edit">
+          增删改查
+        </t-button>
       </view>
     </view>
-    
-    <view wx:if="{{orders.length > 0}}">
-      <view wx:for="{{orders}}" wx:key="id" class="order-item">
+
+    <!-- 订单历史 -->
+    <view class="section-container">
+      <view class="section-header">
+        <text class="section-title">历史订单</text>
+        <view class="section-more" bindtap="viewAllOrders">
+          <text class="more-text">查看全部</text>
+          <t-icon name="chevron-right" size="40rpx" color="#0052d9" />
+        </view>
+      </view>
+      
+      <view wx:if="{{orders.length > 0}}">
+        <view wx:for="{{orders}}" wx:key="id" class="order-item">
+          <t-cell 
+            title="订单 #{{item.id}}" 
+            description="{{item.orderTimeFormatted}}"
+            note="¥{{item.totalPrice}}"
+            bordered="{{index !== orders.length - 1}}"
+            hover
+            bindtap="viewOrderDetail"
+            data-id="{{item.id}}"
+          >
+            <view slot="note-extra">
+              <t-tag theme="{{item.status === 'completed' ? 'success' : 'primary'}}" variant="light" size="small">
+                {{item.status === 'completed' ? '已完成' : '制作中'}}
+              </t-tag>
+            </view>
+          </t-cell>
+        </view>
+      </view>
+      <view wx:else class="empty-tip">
+        <t-icon name="info-circle" size="48rpx" color="#bbb" />
+        <text class="empty-text">暂无订单记录</text>
+      </view>
+    </view>
+
+    <!-- 其他设置 -->
+    <view class="section-container">
+      <t-cell-group theme="card">
+        <!-- 管理员入口 - 仅对管理员显示 -->
         <t-cell 
-          title="订单 #{{item.id}}" 
-          description="{{item.orderTimeFormatted}}"
-          note="¥{{item.totalPrice}}"
-          bordered="{{index !== orders.length - 1}}"
-          hover
-          bindtap="viewOrderDetail"
-          data-id="{{item.id}}"
-        >
-          <view slot="note-extra">
-            <t-tag theme="{{item.status === 'completed' ? 'success' : 'primary'}}" variant="light" size="small">
-              {{item.status === 'completed' ? '已完成' : '制作中'}}
-            </t-tag>
-          </view>
-        </t-cell>
-      </view>
+          wx:if="{{isAdmin && !isSuperAdmin}}" 
+          title="订单管理" 
+          leftIcon="view-list" 
+          hover 
+          arrow 
+          bind:click="goToAdmin"
+          description="管理员专用"
+        />
+        <t-cell title="消息中心" leftIcon="mail" hover arrow />
+        <t-cell title="帮助与反馈" leftIcon="help-circle" hover arrow />
+        <t-cell title="设置" leftIcon="setting" hover arrow />
+      </t-cell-group>
     </view>
-    <view wx:else class="empty-tip">
-      <t-icon name="info-circle" size="48rpx" color="#bbb" />
-      <text class="empty-text">暂无订单记录</text>
+
+    <!-- 退出登录按钮 -->
+    <view class="logout-container">
+      <t-button theme="danger" variant="outline" block bindtap="logout">退出登录</t-button>
     </view>
-  </view>
-
-  <!-- 其他设置 -->
-  <view class="section-container">
-    <t-cell-group theme="card">
-      <t-cell title="消息中心" leftIcon="mail" hover arrow />
-      <t-cell title="帮助与反馈" leftIcon="help-circle" hover arrow />
-      <t-cell title="设置" leftIcon="setting" hover arrow />
-    </t-cell-group>
-  </view>
-
-  <!-- 退出登录按钮 -->
-  <view class="logout-container">
-    <t-button theme="danger" variant="outline" block bindtap="logout">退出登录</t-button>
-  </view>
+  </block>
 
 </view> 
 
 <t-tabbar>
-  <t-tabbar-item key="home" icon="home" text="点单"></t-tabbar-item>
+  <t-tabbar-item key="home" icon="home" text="点单" bindtap="switchToHome"></t-tabbar-item>
   <t-tabbar-item key="profile" icon="user" text="我的" active></t-tabbar-item>
 </t-tabbar> 

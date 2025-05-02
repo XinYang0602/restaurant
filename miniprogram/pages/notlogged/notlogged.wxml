@@ -1,23 +1,34 @@
 <!--notlogged.wxml-->
-<t-navbar title="个人中心" background="#ffffff" title-color="#333333" border></t-navbar>
+<t-navbar title="登录" background="#ffffff" title-color="#333333" border></t-navbar>
 
 <!-- 主要内容区域 -->
 <view class="content">
-  <view class="text-center">
-    <t-icon name="user" size="48" color="#999999"></t-icon>
-    <view class="mt-4 text-xl font-medium text-gray-700">请先登录</view>
-    <view class="mt-2 text-gray-500">登录后可以查看您的订单和个人信息</view>
+  <view class="login-container">
+    <view class="text-center">
+      <t-icon name="shop" size="48" color="#0052d9"></t-icon>
+      <view class="title">小杨私厨</view>
+      <view class="subtitle">美食随心，美味随行</view>
 
-    <!-- 微信一键登录按钮 -->
-    <t-button class="login-button" theme="primary" size="large" bindtap="handleLogin">
-      <t-icon name="wechat" slot="icon"></t-icon>
-      微信一键登录
-    </t-button>
+      <!-- 微信一键登录按钮 -->
+      <t-button class="login-button" theme="primary" size="large" bindtap="handleLogin">
+        <t-icon name="wechat" slot="icon"></t-icon>
+        微信一键登录
+      </t-button>
+      
+      <view class="privacy-text">
+        登录即表示您同意我们的
+        <text class="privacy-link">服务条款</text>
+        和
+        <text class="privacy-link">隐私政策</text>
+      </view>
+    </view>
   </view>
 </view>
 
-<!-- 底部标签栏 -->
+<!-- 底部标签栏，在登录页面里隐藏 -->
+<!-- 
 <t-tabbar>
   <t-tabbar-item key="home" icon="home" text="点单" bindtap="switchToHome"></t-tabbar-item>
   <t-tabbar-item key="profile" icon="user" text="我的" active></t-tabbar-item>
 </t-tabbar> 
+--> 

@@ -1,0 +1,83 @@
+<!-- 后台管理页面 -->
+<view class="container">
+  <!-- 顶部状态栏 -->
+  <view class="status-bar">
+    <view class="status-title">后台数据管理</view>
+  </view>
+
+  <!-- 数据表格区域 -->
+  <view class="tabs-container">
+    <t-tabs value="{{activeTab}}" bind:change="onTabChange">
+      <t-tab-panel label="菜品管理" value="dishes">
+        <view class="table-container">
+          <view class="table-title">dishes列表</view>
+          
+          <!-- 操作按钮 -->
+          <view class="action-buttons">
+            <t-button theme="primary" size="small" bindtap="onAddDish" class="action-btn">新建</t-button>
+            <t-button theme="danger" size="small" bindtap="onDeleteSelected" disabled="{{!hasSelected}}" class="action-btn">删除</t-button>
+            <t-button theme="default" size="small" bindtap="onExportDishes" class="action-btn">导出</t-button>
+            <t-button theme="default" size="small" bindtap="onImportDishes" class="action-btn">导入</t-button>
+            <t-button theme="default" size="small" bindtap="onRefreshTable" class="refresh-btn">
+              <t-icon name="refresh" size="44rpx"></t-icon>
+            </t-button>
+          </view>
+          
+          <!-- 表格头部 -->
+          <view class="table-header">
+            <view class="cell checkbox-cell">
+              <checkbox bindtap="onSelectAll" checked="{{selectAll}}"></checkbox>
+            </view>
+            <view class="cell title-cell">菜品名称</view>
+            <view class="cell kind-cell">类别</view>
+            <view class="cell desc-cell">描述</view>
+            <view class="cell price-cell">价格</view>
+            <view class="cell action-cell">操作</view>
+          </view>
+          
+          <!-- 表格内容 -->
+          <scroll-view scroll-y class="table-body">
+            <block wx:if="{{dishes.length > 0}}">
+              <view wx:for="{{dishes}}" wx:key="_id" class="table-row">
+                <view class="cell checkbox-cell">
+                  <checkbox checked="{{item.selected}}" data-id="{{item._id}}" bindtap="onSelectItem"></checkbox>
+                </view>
+                <view class="cell title-cell">{{item.title}}</view>
+                <view class="cell kind-cell">{{item.kind}}</view>
+                <view class="cell desc-cell">{{item.description}}</view>
+                <view class="cell price-cell">{{item.price}}</view>
+                <view class="cell action-cell">
+                  <view class="action-btns">
+                    <text class="view-btn" data-id="{{item._id}}" bindtap="onViewDish">查看</text>
+                    <text class="edit-btn" data-id="{{item._id}}" bindtap="onEditDish">编辑</text>
+                    <text class="delete-btn" data-id="{{item._id}}" bindtap="onDeleteDish">删除</text>
+                  </view>
+                </view>
+              </view>
+            </block>
+            <view wx:else class="empty-data">
+              <t-icon name="info-circle" size="48rpx" color="#bbb"></t-icon>
+              <text class="empty-text">暂无数据</text>
+            </view>
+          </scroll-view>
+
+          <!-- 分页 -->
+          <view class="pagination">
+            <view class="pagination-info">共 {{total}} 条</view>
+            <view class="pagination-btns">
+              <t-button icon="chevron-left" variant="outline" size="small" bindtap="onPrevPage" disabled="{{currentPage <= 1}}"></t-button>
+              <view class="page-info">{{currentPage}} / {{totalPages}}</view>
+              <t-button icon="chevron-right" variant="outline" size="small" bindtap="onNextPage" disabled="{{currentPage >= totalPages}}"></t-button>
+            </view>
+          </view>
+        </view>
+      </t-tab-panel>
+      
+      <!-- 其他数据表可以在这里添加更多的tab-panel -->
+    </t-tabs>
+  </view>
+</view>
+
+<!-- 提示信息 -->
+<t-toast id="t-toast" />
+<t-message id="t-message" /> 

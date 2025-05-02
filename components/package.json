@@ -1,0 +1,25 @@
+{
+  "name": "@cloudbase-module/block",
+  "version": "1.0.0",
+  "miniprogram": "./dist",
+  "keywords": [
+    "微搭",
+    "小程序",
+    "区块组件",
+    "cloudbase",
+    "cloudbase-module",
+    "cloudbase-component"
+  ],
+  "dependencies": {
+    "@cloudbase/weda-client": "^1.1.24",
+    "@cloudbase/weda-cloud-sdk": "^1.0.96",
+    "@cloudbase/adapter-wx_mp": "^1.0.3",
+    "@cloudbase/auth": "^2.9.2",
+    "@cloudbase/ai": "^2.9.2",
+    "@cloudbase/weda-ui-mp": "3.18.2",
+    "miniprogram-gesture": "^1.0.6",
+    "mobx": "^5",
+    "lodash.get": "^4",
+    "lodash.set": "^4"
+  }
+}

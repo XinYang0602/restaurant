@@ -1,0 +1,47 @@
+<!-- 编辑菜品页面 -->
+<view class="content">
+  <!-- 顶部状态栏 -->
+  <view class="status-bar">
+    <view class="status-title">{{isEdit ? '编辑' : '新增'}}菜品</view>
+  </view>
+
+  <!-- 编辑表单 -->
+  <view class="form-section">
+    <view class="form-card">
+      <view class="form-item">
+        <text class="form-label">菜品名称</text>
+        <input class="form-input" value="{{formData.title}}" bindinput="onTitleChange" placeholder="请输入菜品名称" />
+      </view>
+      
+      <view class="form-item">
+        <text class="form-label">菜品类别</text>
+        <input class="form-input" value="{{formData.kind}}" bindinput="onKindChange" placeholder="请输入菜品类别" />
+      </view>
+      
+      <view class="form-item">
+        <text class="form-label">菜品描述</text>
+        <input class="form-input" value="{{formData.description}}" bindinput="onDescriptionChange" placeholder="请输入菜品描述" />
+      </view>
+      
+      <view class="form-item">
+        <text class="form-label">价格</text>
+        <input class="form-input" type="digit" value="{{formData.price}}" bindinput="onPriceChange" placeholder="请输入价格" />
+      </view>
+      
+      <view class="form-item">
+        <text class="form-label">来源</text>
+        <input class="form-input" value="{{formData.source}}" bindinput="onSourceChange" placeholder="请输入来源" />
+      </view>
+    </view>
+  </view>
+
+  <!-- 按钮区域 -->
+  <view class="button-container">
+    <t-button theme="danger" variant="outline" block bindtap="onCancel">取消</t-button>
+    <t-button theme="primary" block bindtap="onSubmit" style="margin-top: 30rpx;">提交</t-button>
+  </view>
+
+  <!-- 提示信息 -->
+  <t-toast id="t-toast" />
+  <t-message id="t-message" />
+</view> 

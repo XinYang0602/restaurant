@@ -1,7 +1,4 @@
 // index.ts
-// 获取应用实例
-const app = getApp()
-const defaultAvatarUrl = 'https://mmbiz.qpic.cn/mmbiz/icTdbqWNOwNRna42FI242Lcia07jQodd2FJGIYQfG0LAJGFxM4FbnQP6yfMxBgJ0F3YRqJCJ1aPAK2dQagdusBZg/0'
 
 // 定义菜品类型
 interface Dish {
@@ -38,21 +35,11 @@ interface LoginResult {
   openid?: string;
 }
 
-// 修复IAppOption类型错误
-declare global {
-  interface IAppOption {
-    globalData: {
-      userInfo?: WechatMiniprogram.UserInfo;
-    };
-    userInfoReadyCallback?: (res: WechatMiniprogram.UserInfo) => void;
-  }
-}
-
 Component({
   data: {
-    motto: 'Hello World',
+    defaultAvatarUrl: 'https://mmbiz.qpic.cn/mmbiz/icTdbqWNOwNRna42FI242Lcia07jQodd2FJGIYQfG0LAJGFxM4FbnQP6yfMxBgJ0F3YRqJCJ1aPAK2dQagdusBZg/0',
     userInfo: {
-      avatarUrl: defaultAvatarUrl,
+      avatarUrl: 'https://mmbiz.qpic.cn/mmbiz/icTdbqWNOwNRna42FI242Lcia07jQodd2FJGIYQfG0LAJGFxM4FbnQP6yfMxBgJ0F3YRqJCJ1aPAK2dQagdusBZg/0',
       nickName: '',
     },
     hasUserInfo: false,
@@ -212,8 +199,14 @@ Component({
     
     // 检查用户登录状态
     checkUserLoginStatus() {
-      const userInfo = wx.getStorageSync('userInfo');
-      if (userInfo) {
+      // 获取全局应用实例
+      const app = getApp<IAppOption>();
+      
+      // 从全局获取登录状态
+      const isLoggedIn = app.globalData.isLoggedIn;
+      const userInfo = app.globalData.userInfo;
+      
+      if (isLoggedIn && userInfo) {
         this.setData({
           userInfo,
           hasUserInfo: true
@@ -233,7 +226,7 @@ Component({
       const { nickName } = this.data.userInfo
       this.setData({
         "userInfo.avatarUrl": avatarUrl,
-        hasUserInfo: nickName && avatarUrl && avatarUrl !== defaultAvatarUrl,
+        hasUserInfo: nickName && avatarUrl && avatarUrl !== this.data.defaultAvatarUrl,
       })
     },
     
@@ -242,7 +235,7 @@ Component({
       const { avatarUrl } = this.data.userInfo
       this.setData({
         "userInfo.nickName": nickName,
-        hasUserInfo: nickName && avatarUrl && avatarUrl !== defaultAvatarUrl,
+        hasUserInfo: nickName && avatarUrl && avatarUrl !== this.data.defaultAvatarUrl,
       })
     },
     
@@ -381,6 +374,9 @@ Component({
     // 处理用户登录
     async handleLogin() {
       try {
+        // 获取全局应用实例
+        const app = getApp<IAppOption>();
+        
         // 显示加载提示
         wx.showLoading({
           title: '登录中...',
@@ -417,6 +413,17 @@ Component({
         
         if (result.code === 200) {
           console.log('登录成功, openid:', result.openid);
+          
+          // 更新全局数据
+          app.globalData.userInfo = userInfo;
+          app.globalData.openid = result.openid || '';
+          app.globalData.isLoggedIn = true;
+          
+          // 检查是否是管理员
+          if (result.openid) {
+            await app.checkAdminStatus(result.openid);
+          }
+          
           // 登录成功处理
           this.setData({
             userInfo,
@@ -458,4 +465,4 @@ Component({
       }
     }
   },
-})
+}) 

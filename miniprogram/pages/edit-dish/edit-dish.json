@@ -1,0 +1,9 @@
+{
+  "navigationBarTitleText": "编辑菜品",
+  "usingComponents": {
+    "t-button": "tdesign-miniprogram/button/button",
+    "t-message": "tdesign-miniprogram/message/message",
+    "t-toast": "tdesign-miniprogram/toast/toast",
+    "t-icon": "tdesign-miniprogram/icon/icon"
+  }
+} 

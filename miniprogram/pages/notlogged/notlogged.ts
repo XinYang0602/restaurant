@@ -1,4 +1,16 @@
-// notlogged.js
+// notlogged.ts
+
+// 定义登录响应类型
+interface LoginResult {
+  code: number;
+  message: string;
+  isNewUser?: boolean;
+  openid?: string;
+}
+
+// 获取全局应用实例
+const appInstance = getApp<IAppOption>();
+
 Page({
   data: {
     hasUserInfo: false,
@@ -10,17 +22,19 @@ Page({
     this.checkUserLoginStatus();
   },
   
+  onShow() {
+    // 页面显示时也检查登录状态，以处理从其他页面返回的情况
+    this.checkUserLoginStatus();
+  },
+  
   // 检查用户登录状态
   checkUserLoginStatus() {
-    const userInfo = wx.getStorageSync('userInfo');
-    if (userInfo) {
-      this.setData({
-        userInfo,
-        hasUserInfo: true
-      });
-      
+    // 获取全局登录状态
+    const isLoggedIn = appInstance.globalData.isLoggedIn;
+    
+    if (isLoggedIn) {
       // 如果已登录，跳转到个人中心页面
-      wx.navigateTo({
+      wx.switchTab({
         url: '/pages/profile/profile'
       });
     }
@@ -61,19 +75,30 @@ Page({
       wx.hideLoading();
       
       // 类型断言确保类型安全
-      const result = (loginRes.result || {});
+      const result = (loginRes.result || {}) as LoginResult;
       
       if (result.code === 200) {
         console.log('登录成功, openid:', result.openid);
-        // 登录成功处理
-        this.setData({
-          userInfo,
-          hasUserInfo: true
-        });
+        
+        // 更新全局数据
+        appInstance.globalData.userInfo = userInfo;
+        appInstance.globalData.openid = result.openid || '';
+        appInstance.globalData.isLoggedIn = true;
+        
+        // 检查是否是管理员
+        if (result.openid) {
+          await appInstance.checkAdminStatus(result.openid);
+        }
         
         // 保存用户信息到本地存储
         wx.setStorageSync('userInfo', userInfo);
         wx.setStorageSync('openid', result.openid || '');
+        
+        // 更新当前页面数据
+        this.setData({
+          userInfo,
+          hasUserInfo: true
+        });
         
         // 根据是否是新用户显示不同提示
         wx.showToast({
@@ -82,9 +107,9 @@ Page({
           duration: 2000
         });
         
-        // 登录成功后跳转到个人中心
+        // 登录成功后跳转到个人中心，使用switchTab
         setTimeout(() => {
-          wx.navigateTo({
+          wx.switchTab({
             url: '/pages/profile/profile'
           });
         }, 1000);
@@ -92,7 +117,7 @@ Page({
         console.error('登录返回错误码:', result.code, result.message);
         throw new Error(result.message || '登录失败');
       }
-    } catch (err) {
+    } catch (err: any) {
       console.error('登录过程发生错误:', err);
       wx.hideLoading();
       

@@ -1,0 +1,80 @@
+/**edit-dish.wxss**/
+.content {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background-color: #f5f5f5;
+  padding-bottom: 100rpx;
+}
+
+.status-bar {
+  height: 88rpx;
+  background-color: transparent;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 0 30rpx;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  border-bottom: none;
+}
+
+.status-title {
+  font-weight: 500;
+  font-size: 32rpx;
+}
+
+.form-section {
+  margin: 30rpx;
+  width: calc(100% - 60rpx);
+}
+
+.form-card {
+  background-color: #ffffff;
+  border-radius: 12rpx;
+  padding: 30rpx;
+  box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.05);
+}
+
+.form-item {
+  margin-bottom: 30rpx;
+}
+
+.form-item:last-child {
+  margin-bottom: 0;
+}
+
+.form-label {
+  display: block;
+  font-size: 28rpx;
+  color: #333;
+  margin-bottom: 10rpx;
+  font-weight: 500;
+}
+
+.form-input {
+  width: 100%;
+  height: 80rpx;
+  border: 1rpx solid #e0e0e0;
+  border-radius: 8rpx;
+  padding: 0 20rpx;
+  font-size: 28rpx;
+  background-color: #f9f9f9;
+  box-sizing: border-box;
+}
+
+.form-input:focus {
+  border-color: #0052d9;
+  background-color: #ffffff;
+}
+
+.button-container {
+  margin: 30rpx;
+  width: calc(100% - 60rpx);
+}
+
+/* 确保提交按钮与取消按钮有一定间距 */
+.button-container t-button {
+  margin-bottom: 30rpx;
+} 

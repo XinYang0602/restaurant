@@ -1,5 +1,5 @@
 /**profile.wxss**/
-.container {
+.content {
   display: flex;
   flex-direction: column;
   min-height: 100vh;
@@ -25,6 +25,75 @@
   font-size: 32rpx;
 }
 
+/* 未登录状态样式 */
+.not-logged-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  margin: 100rpx 30rpx;
+  padding: 60rpx 30rpx;
+  background-color: #ffffff;
+  border-radius: 12rpx;
+  box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.05);
+}
+
+.text-center {
+  text-align: center;
+}
+
+.mt-4 {
+  margin-top: 16rpx;
+}
+
+.mt-2 {
+  margin-top: 8rpx;
+}
+
+.text-xl {
+  font-size: 36rpx;
+}
+
+.font-medium {
+  font-weight: 500;
+}
+
+.text-gray-700 {
+  color: #333;
+}
+
+.text-gray-500 {
+  color: #666;
+}
+
+.login-button {
+  margin-top: 40rpx;
+  width: 80%;
+}
+
+/* 超级管理员入口样式 */
+.super-admin-container {
+  margin: 30rpx;
+  padding: 10rpx;
+  background-color: rgba(0, 82, 217, 0.08);
+  border-radius: 12rpx;
+  border: 1px dashed #0052d9;
+  box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.05);
+  width: calc(100% - 60rpx);
+}
+
+/* 管理员按钮排列 */
+.admin-buttons {
+  display: flex;
+  justify-content: space-between;
+  gap: 20rpx;
+}
+
+.admin-buttons t-button {
+  flex: 1;
+}
+
+/* 已登录状态样式 */
 .profile-card {
   margin: 30rpx;
   padding: 30rpx;
